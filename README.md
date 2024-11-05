@@ -2,6 +2,21 @@
 Trabajo práctico en grupo.  Universidad Tecnológica Nacional, Mar del Plata
 UML diagram: https://drive.google.com/file/d/1h1cFOmklX779Gvo-TJU82N4HqMNciffV/view?usp=sharing
 
+
+Scenarios: 
+ADMIN
+1) Autorización en el sistema. Cuando inicia sesión por primera vez, login: admin y la contraseña: 12345. Después del primer inicio de sesión, debe cambiar la contraseña.
+2) Agregar y Eliminar un empleado. El administrador puede agregar un nuevo empleado y asignarle el rol apropiado (administrador o recepcionista). El administrador también puede eliminar a un empleado.
+3) 
+
+RECEPCIONISTA 
+1) Autorización en el sistema. Cuando inicia sesión por primera vez, login: email y la contraseña: numero de dni.El administrador primero debe agregar al empleado al sistema.Después del primer inicio de sesión, debe cambiar la contraseña.
+2) Crear una reserva para un cliente. Eliminando reservas. 
+
+CLIENTE
+1) Autorización en el sistema. Cuando inicia sesión por primera vez, login: email y la contraseña: numero de dni. La recepcionista primero debe agregar al empleado al sistema.Después del primer inicio de sesión, debe cambiar la contraseña.
+2) Una vez iniciado sesión, el cliente podrá ver información sobre su reserva activa. Si el cliente no tiene una reserva activa no puede iniciar sesión.
+
 Bloques de proyecto:
 
 1)
