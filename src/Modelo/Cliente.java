@@ -13,6 +13,11 @@ public class Cliente extends Usuario implements IAccionesUsuarios {
         this.telefono = telefono;
     }
 
+    // Getters y Setters
+    public RoleUsuario getRole() {
+        return role;
+    }
+
     public void mostrarDatos() {
         System.out.println("Nombre: " + nombre);
         System.out.println("Apellido: " + apellido);

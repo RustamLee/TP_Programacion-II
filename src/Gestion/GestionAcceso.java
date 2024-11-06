@@ -1,76 +1,102 @@
 package Gestion;
 
+import Excepciones.ClienteNoEncontradoException;
 import Excepciones.EmpleadoNoEncontradoException;
-import Interfaces.IAccionesUsuarios;
-import Interfaces.ICifradorContrasena;
+import Modelo.Cliente;
+import Modelo.Empleado;
+import Modelo.Usuario;
 
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Scanner;
 
-public class GestionAcceso implements ICifradorContrasena, IAccionesUsuarios {
+public class GestionAcceso {
 
     private GestionEmpleado gestionEmpleado;
+    private GestionCliente gestionCliente;
+    private static HashMap<String, String> loginContrasenas = new HashMap<>();
 
     // Constructor
-    public GestionAcceso(GestionEmpleado gestionEmpleado) {
+    public GestionAcceso(GestionEmpleado gestionEmpleado, GestionCliente gestionCliente) {
         this.gestionEmpleado = gestionEmpleado;
+        this.gestionCliente = gestionCliente;
+    }
+
+    // getters y setters
+    public GestionEmpleado getGestionEmpleado() {
+        return gestionEmpleado;
+    }
+    public GestionCliente getGestionCliente() {
+        return gestionCliente;
+    }
+    public static HashMap<String, String> getLoginContrasenas() {
+        return loginContrasenas;
+    }
+
+    // metodo para cargar login y contrasenas a la coleccion
+    public static void cargarLoginContrasenaAColeccion(String email, String contrasena) {
+        loginContrasenas.put(email, contrasena);
     }
 
     // el metodo para verificar que contrasena esta cambiada
-    public boolean verificarLoginContrasena(String login, String contrasenaIngresada) {
-        try{
-            String contrasenaEnColeccion = gestionEmpleado.getLoginContrasenas().get(login);
-            String dniEmpleado = gestionEmpleado.buscarEmpleadoPorEmail(login).getDNI();
-            if (contrasenaEnColeccion != null) {
-                if ((contrasenaEnColeccion.equals(dniEmpleado)) && (contrasenaEnColeccion.equals(contrasenaIngresada))) {
-                    cambiarContrasena(login);
-                    return true;
-                }
-                return contrasenaEnColeccion.equals(contrasenaIngresada);
-            }
-        } catch (EmpleadoNoEncontradoException e) {
-            System.out.println(e.getMessage());
+    public Usuario verificarUsuario(String login, String contrasenaIngresada) throws EmpleadoNoEncontradoException, ClienteNoEncontradoException {
+        String contrasenaEnColeccion = loginContrasenas.get(login);
+        if (contrasenaEnColeccion == null) {
+            System.out.println("Usuario no encontrado.");
+            return null;
         }
-        return false;
+        Usuario usuario = buscarUsuarioPorEmail(login);
+        if (usuario != null) {
+            if (contrasenaEnColeccion.equals(contrasenaIngresada)) {
+                if (contrasenaEnColeccion.equals(usuario.getDNI())) {
+                    cambiarContrasena(usuario);
+                }
+                return usuario;
+            } else {
+                System.out.println("Contraseña incorrecta.");
+            }
+        } else {
+            System.out.println("Usuario no encontrado.");
+        }
+
+        return null;
     }
 
     // el metodo para cambiarContrasena
-    public void cambiarContrasena(String email) throws EmpleadoNoEncontradoException {
+    public void cambiarContrasena(Usuario usuario) {
         Scanner scanner = new Scanner(System.in);
-        try{
-            String dniEmpleado = gestionEmpleado.buscarEmpleadoPorEmail(email).getDNI();
-            String nuevaContrasena;
-            while (true) {
-                System.out.println("Tenes que cambiar su contraseña. La nueva contraseña no puede ser igual al DNI.");
-                System.out.print("Ingrese una nueva contraseña: ");
-                nuevaContrasena = scanner.nextLine();
-                if (nuevaContrasena == null || nuevaContrasena.isEmpty()) {
-                    System.out.println("La nueva contraseña no puede ser nula o vacía. Inténtelo de nuevo.");
-                }else if (nuevaContrasena.equals(dniEmpleado)) {
-                    System.out.println("La nueva contraseña no puede ser igual al DNI. Inténtelo de nuevo.");
-                } else {
-                    break;
-                }
+        String nuevaContrasena;
+        String dni = usuario.getDNI();
+        while (true) {
+            System.out.println("Debe cambiar su contraseña. La nueva contraseña no puede ser igual al DNI.");
+            System.out.print("Ingrese una nueva contraseña: ");
+            nuevaContrasena = scanner.nextLine();
+            if (nuevaContrasena == null || nuevaContrasena.isEmpty()) {
+                System.out.println("La nueva contraseña no puede ser nula o vacía. Inténtelo de nuevo.");
+            } else if (nuevaContrasena.equals(dni)) {
+                System.out.println("La nueva contraseña no puede ser igual al DNI. Inténtelo de nuevo.");
+            } else {
+                break;
             }
-            gestionEmpleado.getLoginContrasenas().put(email, nuevaContrasena);
-            System.out.println("La contraseña se cambió correctamente.");
-        } catch (EmpleadoNoEncontradoException e) {
-            System.out.println(e.getMessage());
         }
+        loginContrasenas.put(usuario.getEmail(), nuevaContrasena);
+        System.out.println("La contraseña se cambió correctamente.");
     }
 
-    @Override
-    public String cifrarContrasena(String contrasena) {
-        return Base64.getEncoder().encodeToString(contrasena.getBytes());
+    // metodo para buscar usuario por email
+    public Usuario buscarUsuarioPorEmail(String email) throws EmpleadoNoEncontradoException, ClienteNoEncontradoException {
+        Empleado empleado = gestionEmpleado.buscarEmpleadoPorEmail(email);
+        if (empleado != null) {
+            return empleado;
+        }
+        Cliente cliente = gestionCliente.buscarClientePorEmail(email);
+        if (cliente != null) {
+            return cliente;
+        }
+        return null;
     }
 
-    @Override
-    public void login() {
-        System.out.println("Para iniciar sesión, ingrese su email:");
-    }
 
-    @Override
-    public void logout() {
-        System.out.println("Logout");
-    }
+
+
 }
