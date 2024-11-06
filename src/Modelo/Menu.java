@@ -21,7 +21,7 @@ public class Menu {
             System.out.println("      Sistema de Hotel");
             System.out.println("===============================");
             System.out.println("1. Iniciar sesion");
-            System.out.println("2. Salir");
+            System.out.println("2. Salir del programa");
             System.out.println("===============================");
             System.out.print("Seleccione una opcion: ");
             int option = scanner.nextInt();
@@ -48,16 +48,14 @@ public class Menu {
         System.out.print("Ingrese su contraseña: ");
         String password = scanner.nextLine();
 
-        // Verificar el usuario utilizando el método verificarUsuario
+        // Verificar el usuario utilizando
         Usuario usuario = gestionAcceso.verificarUsuario(email, password);
 
         if (usuario == null) {
             System.out.println("Volviendo al menu principal...");
             return;
         }
-
-        // Determinar la rol del usuario
-        RoleUsuario role = usuario.getRole();  // Suponemos que Usuario tiene el método getRole()
+        RoleUsuario role = usuario.getRole();
 
         switch (role) {
             case ADMINISTRADOR:
@@ -74,19 +72,19 @@ public class Menu {
         }
     }
 
-    private void adminMenu(Scanner scanner) {
+    private void adminMenu(Scanner scanner) throws EmpleadoNoEncontradoException {
         while (true) {
             System.out.println("===============================");
             System.out.println("       Menu Administrador");
             System.out.println("===============================");
-            System.out.println("1. Agregar nuevo empleado");
-            System.out.println("2. Eliminar empleado");
-            System.out.println("3. Editar datos de empleado");
-            System.out.println("4. Agregar habitación");
-            System.out.println("5. Eliminar habitación");
-            System.out.println("6. Editar datos de habitacion");
-            System.out.println("7. Ver informes de reservas");
-            System.out.println("8. Hacer backup de datos");
+            System.out.println("1. Agregar nuevo empleado"); //listo
+            System.out.println("2. Eliminar empleado"); //listo
+            System.out.println("3. Editar datos (telefono) de empleado"); //listo
+            System.out.println("4. Mostrar datos de empleado por DNI"); //listo
+            System.out.println("5. Mostrar todos los empleados"); //listo
+            System.out.println("6. Agregar habitación");
+            System.out.println("7. Eliminar habitación");
+            System.out.println("8. Ver informes de reservas");
             System.out.println("9. Salir");
             System.out.println("===============================");
             System.out.print("Seleccione una opcion: ");
@@ -97,7 +95,28 @@ public class Menu {
                 break; // Salir del menú del Administrador
             }
 
-            System.out.println("Funcionalidad no implementada aun.");
+            switch (option) {
+                case 1:
+                    gestionAcceso.getGestionEmpleado().agregarUsuarioAColeccion();
+                    break;
+                case 2:
+                    gestionAcceso.getGestionEmpleado().eliminarEmpleadoDeColeccion(scanner);
+                    break;
+                case 3:
+                    gestionAcceso.getGestionEmpleado().editarDatosEmpleado(scanner);
+                    break;
+                case 4:
+                    gestionAcceso.getGestionEmpleado().mostrarEmpleadoPorDNI(scanner);
+                    break;
+                case 5:
+                    gestionAcceso.getGestionEmpleado().mostrarEmpleados();
+                    break;
+
+                case 9:
+                    return; // Salir del menú del Administrador
+                default:
+                    System.out.println("Opción no válida.");
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import Modelo.Cliente;
 
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class GestionCliente implements IUserCreator {
     private HashMap<String, Cliente> clientes;// coleccion para almacenar clientes (key: DNI, value: Cliente)
@@ -27,21 +28,23 @@ public class GestionCliente implements IUserCreator {
 
     // el metodo para crear nuevoCliente
     public void agregarUsuarioAColeccion() throws ClienteYaExistenteException {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Ingrese el nombre del cliente: ");
-        String nombre = System.console().readLine();
+        String nombre = scanner.nextLine();
         System.out.println("Ingrese el apellido del cliente: ");
-        String apellido = System.console().readLine();
+        String apellido = scanner.nextLine();
         System.out.println("Ingrese el DNI del cliente: ");
-        String DNI = System.console().readLine();
+        String DNI = scanner.nextLine();
         RoleUsuario role = RoleUsuario.CLIENTE;
         System.out.println("Ingrese el email del cliente: ");
+        String email = scanner.nextLine();
         System.out.println("Ingrese la direccion del cliente: ");
-        String direccion = System.console().readLine();
-        String email = System.console().readLine();
-        System.out.println("Ingrese el telefono del empleado: ");
-        String telefono = System.console().readLine();
+        String direccion = scanner.nextLine();
+        System.out.println("Ingrese el telefono del cliente: ");
+        String telefono = scanner.nextLine();
         Cliente cliente = new Cliente(nombre, apellido, DNI, role, email, direccion, telefono);
         addClienteToCollection(cliente);
+        System.out.println("Cliente agregado con éxito.");
     }
 
     // metodo para eliminar cliente de la coleccion

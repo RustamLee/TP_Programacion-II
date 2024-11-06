@@ -21,18 +21,14 @@ public class Main {
         GestionArchivo gestionArchivo = new GestionArchivo(gestionAcceso);
         Menu menu = new Menu(gestionAcceso);
 
-        //cargar empleados desde archivo JSON
+        // cargar empleados desde archivo JSON
         gestionArchivo.cargarEmpleadosDesdeArchivo();
         gestionArchivo.cargarLoginContrasenaDesdeArchivo();
-
-        //gestionEmpleado.agregarUsuarioAColeccion(); // agregar empleados a la coleccion
-        //gestionCliente.agregarUsuarioAColeccion(); // agregar clientes a la coleccion
 
         menu.start();
 
         // guardar empleados y login y contrasenas en archivos JSON
         gestionArchivo.guardarEmpleados();
-        gestionArchivo.guardarLoginContrasena();
         gestionArchivo.guardarLoginContrasena();
     }
 }

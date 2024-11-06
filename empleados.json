@@ -1,1 +1,18 @@
-{"12345":{"telefono":"123456789","nombre":"Anna","apellido":"German","DNI":"12345","role":"ADMINISTRADOR","email":"hola@gmail.com"}}
+{
+  "11111": {
+    "telefono": "3231313",
+    "nombre": "Alan",
+    "apellido": "Rusich",
+    "DNI": "11111",
+    "role": "RECEPCIONISTA",
+    "email": "chao@mail"
+  },
+  "12345": {
+    "telefono": "123456789",
+    "nombre": "Anna",
+    "apellido": "German",
+    "DNI": "12345",
+    "role": "ADMINISTRADOR",
+    "email": "hola@gmail.com"
+  }
+}

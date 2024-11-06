@@ -19,8 +19,11 @@ public class Empleado extends Usuario {
     public RoleUsuario getRole() {
         return role;
     }
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
 
     public void mostrarEmpleado() {
-        System.out.println("Nombre:" + nombre + " Apellido:" + apellido + " DNI:" + DNI + " Email:" + email + " Teléfono:" + telefono);
+        System.out.println("Nombre:" + nombre + " Apellido:" + apellido + " DNI:" + DNI +"Role:"+ role+" Email:" + email + " Teléfono:" + telefono);
     }
 }

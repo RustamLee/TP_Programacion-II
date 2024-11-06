@@ -40,12 +40,6 @@ public abstract class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario{" +
-                "nombre='" + nombre + '\'' +
-                ", apellido='" + apellido + '\'' +
-                ", DNI='" + DNI + '\'' +
-                ", role=" + role +
-                ", email='" + email + '\'' +
-                '}';
+        return "Usuario{"+"nombre:" + nombre + " apellido:" + apellido + " DNI:" + DNI + " role:" + role + " email:" + email + '}';
     }
 }
