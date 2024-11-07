@@ -1,9 +1,10 @@
 package Modelo;
 
 import Enumeraciones.RoleUsuario;
-import Interfaces.IAccionesUsuarios;
 
-public class Cliente extends Usuario implements IAccionesUsuarios {
+import java.util.Objects;
+
+public class Cliente extends Usuario {
     public String direccion;
     public String telefono;
 
@@ -26,20 +27,19 @@ public class Cliente extends Usuario implements IAccionesUsuarios {
         return apellido;
     }
 
-
     public void mostrarCliente() {
         System.out.println("Nombre:" + nombre + " Apellido:" + apellido + " DNI:" + DNI + " Direccion:" + direccion + " Email:" + email + " Teléfono:" + telefono);
     }
 
     @Override
-    public void login() {
-        System.out.println("Login de Cliente");
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Cliente cliente)) return false;
+        return Objects.equals(direccion, cliente.direccion) && Objects.equals(telefono, cliente.telefono);
     }
 
     @Override
-    public void logout() {
-        System.out.println("Logout de Cliente");
+    public int hashCode() {
+        return Objects.hash(direccion, telefono);
     }
-
-
 }

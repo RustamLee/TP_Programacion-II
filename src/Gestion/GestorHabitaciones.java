@@ -107,6 +107,7 @@ public class GestorHabitaciones {
         throw new HabitacionNoEncontradaException("No se encontró la habitación con el número: " + numeroHabitacion);
     }
 
+    // metodo para mostrar todas las habitaciones
     public void mostrarTodasHabitaciones() {
         System.out.println("Todas las habitaciones");
         for (Habitacion aux : listaHabitaciones) {

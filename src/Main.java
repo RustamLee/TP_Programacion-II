@@ -1,6 +1,7 @@
 import Excepciones.ClienteNoEncontradoException;
 import Excepciones.ClienteYaExistenteException;
 import Excepciones.EmpleadoNoEncontradoException;
+import Excepciones.HabitacionNoEncontradaException;
 import Gestion.*;
 import Modelo.Menu;
 
@@ -8,7 +9,7 @@ import Modelo.Menu;
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) throws IOException, EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException {
+    public static void main(String[] args) throws IOException, EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException, HabitacionNoEncontradaException {
 
         GestorEmpleados gestorEmpleados = new GestorEmpleados();
         GestorClientes gestorClientes = new GestorClientes();

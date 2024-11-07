@@ -9,10 +9,8 @@ import Modelo.Habitacion;
 import Modelo.Reserva;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class GestorReservas {
     private Map<Integer, List<Reserva>> reservasPorHabitacion;
@@ -33,7 +31,7 @@ public class GestorReservas {
     }
 
     // metodo para realizar checkIN
-    public void checkIN(Cliente cliente, int numeroHabitacion, LocalDate fechaEntrada, LocalDate fechaSalida) throws HabitacionNoDisponibleException, HabitacionNoEncontradaException {
+    public void checkIn(Cliente cliente, int numeroHabitacion, LocalDate fechaEntrada, LocalDate fechaSalida) throws HabitacionNoDisponibleException, HabitacionNoEncontradaException {
         if (cliente == null || numeroHabitacion <= 0 || fechaEntrada == null || fechaSalida == null) {
             throw new IllegalArgumentException("El cliente, el número de habitación o las fechas no pueden ser nulos");
         }
@@ -44,6 +42,7 @@ public class GestorReservas {
         habitacion.cambiarEstado(EstadoHabitacion.OCUPADO);
         Reserva nuevaReserva = new Reserva(cliente, habitacion, fechaEntrada, fechaSalida);
         reservasPorHabitacion.computeIfAbsent(habitacion.getIdHabitacion(), k -> new ArrayList<>()).add(nuevaReserva);
+        System.out.println("Reserva realizada!");
     }
 
     // metodo para verificar si la habitación está disponible en las FECHAS CONCRETAS
@@ -108,6 +107,22 @@ public class GestorReservas {
                 System.out.println(reserva);
             }
         }
+    }
+
+    // aux metodo para obtener object LocalDate desde el usuario (se usa en checkIN)
+    public static LocalDate obtenerFecha(Scanner scanner, String mensaje) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate fecha = null;
+        while (fecha == null) {
+            try {
+                System.out.print(mensaje);
+                String fechaStr = scanner.nextLine();
+                fecha = LocalDate.parse(fechaStr, formatter);
+            } catch (Exception e) {
+                System.out.println("Error: la fecha debe tener el formato yyyy-MM-dd.");
+            }
+        }
+        return fecha;
     }
 
 }

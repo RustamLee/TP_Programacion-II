@@ -24,8 +24,8 @@ public class Habitacion {
         return IdHabitacion;
     }
 
-    public void setIdHabitacion(int idHabitacion) {
-        this.IdHabitacion = idHabitacion;
+    public void setIdHabitacion(int numeroHabitacion) {
+        this.IdHabitacion = numeroHabitacion;
     }
 
 

@@ -73,6 +73,20 @@ public class GestorClientes implements IUserCreator {
         throw new ClienteNoEncontradoException("Cliente no encontrado");
     }
 
+    // buscar clientes por DNI
+    public Cliente buscarClientePorDNI(String DNI) {
+        try {
+            if (!clientes.containsKey(DNI)) {
+                throw new ClienteNoEncontradoException("Cliente no encontrado");
+            }
+            return clientes.get(DNI);
+        } catch (ClienteNoEncontradoException e) {
+            System.out.println("Error: " + e.getMessage());
+            return null;
+        }
+    }
+
+
     // metodos para mostrar todos los clientes
     public void mostrarClientes() {
         for (Cliente e : clientes.values()) {

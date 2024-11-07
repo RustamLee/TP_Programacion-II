@@ -4,9 +4,11 @@ import Enumeraciones.RoleUsuario;
 import Excepciones.ClienteNoEncontradoException;
 import Excepciones.ClienteYaExistenteException;
 import Excepciones.EmpleadoNoEncontradoException;
+import Excepciones.HabitacionNoEncontradaException;
 import Gestion.GestorAccesos;
 import Gestion.GestorReservas;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Menu {
@@ -18,7 +20,7 @@ public class Menu {
         this.gestorReservas = gestorReservas;
     }
 
-    public void start() throws EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException {
+    public void start() throws EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException, HabitacionNoEncontradaException {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("===============================");
@@ -43,7 +45,7 @@ public class Menu {
         scanner.close();
     }
 
-    private void login(Scanner scanner) throws EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException {
+    private void login(Scanner scanner) throws EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException, HabitacionNoEncontradaException {
         System.out.println("===============================");
         System.out.println("       Iniciar sesion");
         System.out.println("===============================");
@@ -132,39 +134,53 @@ public class Menu {
         }
     }
 
-    private void receptionistMenu(Scanner scanner) throws ClienteYaExistenteException {
+    private void receptionistMenu(Scanner scanner) throws ClienteYaExistenteException, HabitacionNoEncontradaException {
         while (true) {
             System.out.println("===============================");
             System.out.println("     Menu Recepcionista");
             System.out.println("===============================");
             System.out.println("1. Registrar un cliente"); // listo
-            System.out.println("2. Realizar Check-in");
-            System.out.println("3. Realizar Check-out");
+            System.out.println("2. Realizar Check-in"); // listo
+            System.out.println("3. Realizar Check-out");// listo
             System.out.println("4. Consultar disponibilidad de habitaciones");
             System.out.println("5. Listar habitaciones ocupadas");
             System.out.println("6. Listar habitaciones disponibles");
-            System.out.println("7. Ver datos de un pasajero");
-            System.out.println("8. Salir");
+            System.out.println("7. Ver datos de un cliente");
+            System.out.println("8. Mostrar todas las reservas");
+            System.out.println("9. Salir");
             System.out.println("===============================");
             System.out.print("Seleccione una opción: ");
             int option = scanner.nextInt();
             scanner.nextLine();
 
-            if (option == 8) {
+            if (option == 9) {
                 break; // Salir del menú del Recepcionista
             }
             switch (option) {
                 case 1:
-                    System.out.println("Registrar un cliente");
                     gestorAccesos.getGestorCliente().agregarUsuarioAColeccion();
                     break;
                 case 2:
-                    System.out.println("Check-in");
+                    System.out.println("Ingrese el DNI del cliente: ");
+                    Cliente c = gestorAccesos.getGestorCliente().buscarClientePorDNI(scanner.nextLine());
+                    System.out.println("Ingrese el número de habitación: ");
+                    int numHabitacion = scanner.nextInt();
+                    scanner.nextLine();
+                    LocalDate fechaEntrada = GestorReservas.obtenerFecha(scanner, "Ingrese la fecha de entrada (yyyy-MM-dd): ");
+                    LocalDate fechaSalida = GestorReservas.obtenerFecha(scanner, "Ingrese la fecha de salida (yyyy-MM-dd): ");
+                    gestorReservas.checkIn(c,numHabitacion, fechaEntrada, fechaSalida);
                     break;
                 case 3:
-                    System.out.println("Check-out");
+                    System.out.println("Ingrese el DNI del cliente: ");
+                    Cliente cliente = gestorAccesos.getGestorCliente().buscarClientePorDNI(scanner.nextLine());
+                    System.out.println("Ingrese el número de habitación: ");
+                    Habitacion h = gestorReservas.getGestorHabitaciones().buscarHabitacionPorNumero(scanner.nextInt());
+                    gestorReservas.checkOut(cliente, h);
                     break;
                 case 8:
+                    System.out.println("Mostrando todas las reservas...");
+                    break;
+                case 9:
                     return; // Salir del menú del Recepcionista
                 default:
                     System.out.println("Opción no válida.");

@@ -2,6 +2,8 @@ package Modelo;
 
 import Enumeraciones.RoleUsuario;
 
+import java.util.Objects;
+
 public class Empleado extends Usuario {
     public String telefono;
 
@@ -25,5 +27,17 @@ public class Empleado extends Usuario {
 
     public void mostrarEmpleado() {
         System.out.println("Nombre:" + nombre + " Apellido:" + apellido + " DNI:" + DNI +"Role:"+ role+" Email:" + email + " Teléfono:" + telefono);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Empleado empleado)) return false;
+        return Objects.equals(telefono, empleado.telefono);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(telefono);
     }
 }
