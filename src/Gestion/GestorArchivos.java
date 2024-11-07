@@ -1,20 +1,16 @@
 package Gestion;
 
-import Modelo.Cliente;
-import Modelo.Empleado;
+import Modelo.*;
 
-import Modelo.LocalDateAdapter;
-import Modelo.Reserva;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,14 +23,15 @@ public class GestorArchivos {
     private String CLIENTES_PATH = "clientes.json";
     private String LOGIN_PATH = "loginContrasenas.json";
     private String RESERVAS_PATH = "reservas.json";
+    private String HABITACIONES_PATH = "habitaciones.json";
     private Gson gson;
 
     // Constructor
     public GestorArchivos(GestorAccesos gestorAccesos, GestorReservas gestorReservas) {
-        this.gestorAccesos = gestorAccesos;
-        this.gestorReservas = gestorReservas;
-        this.gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter()) // Регистрируем адаптер
+        this.gestorAccesos = gestorAccesos; //usamos este objeto para acceder a colecciones de empleados y clientes.
+        this.gestorReservas = gestorReservas; // este objeto para acceder a la colección de reservas y, a través de las reservas, obtenemos acceso a la colección de habitaciones.
+        this.gson = new GsonBuilder() // este objeto para serializar y deserializar objetos de fecha local.
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .create();
     }
 
@@ -73,6 +70,15 @@ public class GestorArchivos {
             gson.toJson(gestorAccesos.getLoginContrasenas(), writer);
         } catch (IOException e) {
             System.err.println("Error guardando login y contrasena: " + e.getMessage());
+        }
+    }
+
+    // guardamos habitaciones en un archivo JSON
+    public void guardarHabitaciones() {
+        try(FileWriter writer = new FileWriter(HABITACIONES_PATH)) {
+            gson.toJson(gestorReservas.getGestorHabitaciones().getListaHabitaciones(), writer);
+        } catch (IOException e) {
+            System.err.println("Error guardando habitaciones: " + e.getMessage());
         }
     }
 
@@ -129,19 +135,40 @@ public class GestorArchivos {
         }
     }
 
+    // cargar habitaciones desde el archivo JSON al colección habitaciones
+    public void cargarHabitacionesDesdeArchivo() throws IOException {
+        isArchivoExiste(HABITACIONES_PATH, new ArrayList<Habitacion>());
+        try (FileReader reader = new FileReader(HABITACIONES_PATH)) {
+            Type type = new TypeToken<ArrayList<Habitacion>>() {}.getType();
+            ArrayList<Habitacion> habitacionesDeArchivo = gson.fromJson(reader, type);
+            if (habitacionesDeArchivo != null) {
+                gestorReservas.getGestorHabitaciones().getListaHabitaciones().addAll(habitacionesDeArchivo);
+            }
+        } catch (IOException e) {
+            System.err.println("Error verificando o creando el archivo de habitaciones: " + e.getMessage());
+        } catch (JsonSyntaxException e) {
+            System.err.println("Error de sintaxis en el archivo JSON: " + e.getMessage());
+        }
+    }
+
+
     // cargar reservas desde el archivo JSON al colección reservasPorHabitacion
-    public void cargarReservasDesdeArchivo() throws IOException {
+    public void cargarReservasDesdeArchivo () throws IOException {
         isArchivoExiste(RESERVAS_PATH, new HashMap<Integer, List<Reserva>>());
         try (FileReader reader = new FileReader(RESERVAS_PATH)) {
-            Type type = new TypeToken<Map<Integer, List<Reserva>>>() {}.getType();
+            Type type = new TypeToken<Map<Integer, List<Reserva>>>() {
+            }.getType();
             Map<Integer, List<Reserva>> reservasDeArchivo = gson.fromJson(reader, type);
             if (reservasDeArchivo != null) {
                 gestorReservas.getReservasPorHabitacion().putAll(reservasDeArchivo);
             }
+        } catch (FileNotFoundException e) {
+            System.err.println("Archivo no encontrado: " + e.getMessage());
+        } catch (JsonSyntaxException e) {
+            System.err.println("Error de sintaxis en el archivo JSON: " + e.getMessage());
         } catch (IOException e) {
-            System.err.println("Error verificando o creando el archivo de reservas: " + e.getMessage());
+            System.err.println("Error leyendo el archivo: " + e.getMessage());
         }
     }
-
 
 }

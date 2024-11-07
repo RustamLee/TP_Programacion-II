@@ -5,14 +5,17 @@ import Excepciones.ClienteNoEncontradoException;
 import Excepciones.ClienteYaExistenteException;
 import Excepciones.EmpleadoNoEncontradoException;
 import Gestion.GestorAccesos;
+import Gestion.GestorReservas;
 
 import java.util.Scanner;
 
 public class Menu {
     private GestorAccesos gestorAccesos;
+    private GestorReservas gestorReservas;
 
-    public Menu(GestorAccesos gestorAccesos) {
+    public Menu(GestorAccesos gestorAccesos, GestorReservas gestorReservas) {
         this.gestorAccesos = gestorAccesos;
+        this.gestorReservas = gestorReservas;
     }
 
     public void start() throws EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException {
@@ -83,9 +86,9 @@ public class Menu {
             System.out.println("3. Editar datos (telefono) de empleado"); //listo
             System.out.println("4. Mostrar datos de empleado por DNI"); //listo
             System.out.println("5. Mostrar todos los empleados"); //listo
-            System.out.println("6. Agregar habitación");
-            System.out.println("7. Eliminar habitación");
-            System.out.println("8. Ver informes de reservas");
+            System.out.println("6. Agregar habitación");//listo
+            System.out.println("7. Eliminar habitación");//listo
+            System.out.println("8. Ver informes de reservas"); //listo
             System.out.println("9. Salir");
             System.out.println("===============================");
             System.out.print("Seleccione una opcion: ");
@@ -111,6 +114,15 @@ public class Menu {
                     break;
                 case 5:
                     gestorAccesos.getGestorEmpleado().mostrarEmpleados();
+                    break;
+                case 6:
+                    gestorReservas.getGestorHabitaciones().agregarHabitacion();
+                    break;
+                case 7:
+                    gestorReservas.getGestorHabitaciones().eliminarHabitacionDeColeccion(scanner);
+                    break;
+                case 8:
+                    gestorReservas.mostrarReservas();
                     break;
                 case 9:
                     return; // Salir del menú del Administrador

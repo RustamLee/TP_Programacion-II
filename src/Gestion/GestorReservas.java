@@ -28,6 +28,9 @@ public class GestorReservas {
     public Map<Integer, List<Reserva>> getReservasPorHabitacion() {
         return reservasPorHabitacion;
     }
+    public GestorHabitaciones getGestorHabitaciones() {
+        return gestorHabitaciones;
+    }
 
     // metodo para realizar checkIN
     public void checkIN(Cliente cliente, int numeroHabitacion, LocalDate fechaEntrada, LocalDate fechaSalida) throws HabitacionNoDisponibleException, HabitacionNoEncontradaException {
@@ -96,7 +99,7 @@ public class GestorReservas {
         }
     }
 
-    // aux metodo para mostrar reservas para una habitación
+    // aux metodo para mostrar reservas para una habitacion(se usa en mostrarReservas)
     private void mostrarReservasParaHabitacion(List<Reserva> reservas) {
         if (reservas == null || reservas.isEmpty()) {
             System.out.println("No hay reservas para esta habitación.");

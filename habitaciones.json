@@ -1,0 +1,14 @@
+[
+  {
+    "IdHabitacion": 100,
+    "tamano": "SINGLE",
+    "tipoHabitacion": "ECONOMICO",
+    "estado": "DISPONIBLE"
+  },
+  {
+    "IdHabitacion": 200,
+    "tamano": "TWIN",
+    "tipoHabitacion": "STANDARD",
+    "estado": "DISPONIBLE"
+  }
+]

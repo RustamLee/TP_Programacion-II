@@ -18,7 +18,7 @@ public class GestorEmpleados implements IUserCreator {
     }
 
     // aux metodo para agregar un empleado a la coleccion
-    public void addEmpleadoToCollection(Empleado e) throws EmpleadoYaExistenteException {
+    public void addEmpleadoACollection(Empleado e) throws EmpleadoYaExistenteException {
         if (empleados.containsKey(e.getDNI())) {
             throw new EmpleadoYaExistenteException("Empleado ya existe");
         }
@@ -54,7 +54,7 @@ public class GestorEmpleados implements IUserCreator {
 
         Empleado empleado = new Empleado(nombre, apellido, DNI, role, email, telefono);
         try {
-            addEmpleadoToCollection(empleado);
+            addEmpleadoACollection(empleado);
             System.out.println("Empleado agregado con éxito.");
         } catch (EmpleadoYaExistenteException e) {
             System.out.println(e.getMessage());
