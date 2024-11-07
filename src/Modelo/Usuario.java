@@ -1,7 +1,7 @@
 package Modelo;
 
 import Enumeraciones.RoleUsuario;
-import Gestion.GestionAcceso;
+import Gestion.GestorAccesos;
 
 public abstract class Usuario {
     protected String nombre;
@@ -12,7 +12,7 @@ public abstract class Usuario {
 
     // constructor
     public Usuario(String nombre, String apellido, String DNI, RoleUsuario role, String email) {
-        GestionAcceso.cargarLoginContrasenaAColeccion(email, DNI);
+        GestorAccesos.cargarLoginContrasenaAColeccion(email, DNI);
         this.nombre = nombre;
         this.apellido = apellido;
         this.DNI = DNI;
@@ -30,7 +30,7 @@ public abstract class Usuario {
     public RoleUsuario getRole() {
         return role;
     }
-    public static void setGestionUsuario(GestionAcceso gestionAcceso) {
+    public static void setGestionUsuario(GestorAccesos gestorAccesos) {
     }
 
     // otros metodos

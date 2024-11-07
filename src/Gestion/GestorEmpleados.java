@@ -9,11 +9,11 @@ import Modelo.Empleado;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class GestionEmpleado implements IUserCreator {
+public class GestorEmpleados implements IUserCreator {
     private HashMap<String, Empleado> empleados;// coleccion para almacenar empleados (key: DNI, value: Empleado)
 
     // constructor
-    public GestionEmpleado() {
+    public GestorEmpleados() {
         this.empleados = new HashMap<>();
     }
 
@@ -25,7 +25,7 @@ public class GestionEmpleado implements IUserCreator {
         empleados.put(e.getDNI(), e);
     }
 
-    // el metodo para cargar nuevoEmpleado
+    // el metodo para cargar nuevo Empleado
     public void agregarUsuarioAColeccion() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Ingrese el nombre del empleado: ");
@@ -85,11 +85,12 @@ public class GestionEmpleado implements IUserCreator {
         empleados.get(DNI).mostrarEmpleado();
     }
 
-    // get metodo para obtener coleccion empleados y loginContrasenas
+    // get metodo para obtener coleccion empleados
     public HashMap<String, Empleado> getEmpleados() {
         return empleados;
     }
 
+    // buscar empleados por email
     public Empleado buscarEmpleadoPorEmail(String email) throws EmpleadoNoEncontradoException {
         for (Empleado e : empleados.values()) {
             if (e.getEmail().equals(email)) {
@@ -97,8 +98,7 @@ public class GestionEmpleado implements IUserCreator {
             }
         }
         throw new EmpleadoNoEncontradoException("Empleado no encontrado");
-    }    // buscar empleado por email
-
+    }
 
     // metodos para mostrar los datos de emppleados
     public void mostrarEmpleados() {

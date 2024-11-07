@@ -6,24 +6,33 @@ import Excepciones.ClienteYaExistenteException;
 import Interfaces.IUserCreator;
 import Modelo.Cliente;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class GestionCliente implements IUserCreator {
+public class GestorClientes implements IUserCreator {
     private HashMap<String, Cliente> clientes;// coleccion para almacenar clientes (key: DNI, value: Cliente)
 
     // constructor
-    public GestionCliente() {
+    public GestorClientes() {
         this.clientes = new HashMap<>();
     }
 
-    // aux metodo para agregar un cliente a la coleccion
-    public void addClienteToCollection(Cliente e) throws ClienteYaExistenteException {
-        if (clientes.containsKey(e.getDNI())) {
-            throw new ClienteYaExistenteException("Cliente ya existe");
+    // getters y setters
+    public HashMap<String, Cliente> getClientes() {
+        return clientes;
+    }
+
+    // aux metodo para agregar un cliente a la coleccion (se usa en el metodo agregarUsuarioAColeccion)
+    public void addClienteToCollection(Cliente c) {
+        try {
+            if (clientes.containsKey(c.getDNI())) {
+                throw new ClienteYaExistenteException("Cliente ya existe");
+            }
+            clientes.put(c.getDNI(), c);
+            System.out.println("Cliente agregado con éxito.");
+        } catch (ClienteYaExistenteException e) {
+            System.out.println(e.getMessage());
         }
-        clientes.put(e.getDNI(), e);
     }
 
     // el metodo para crear nuevoCliente
@@ -44,7 +53,6 @@ public class GestionCliente implements IUserCreator {
         String telefono = scanner.nextLine();
         Cliente cliente = new Cliente(nombre, apellido, DNI, role, email, direccion, telefono);
         addClienteToCollection(cliente);
-        System.out.println("Cliente agregado con éxito.");
     }
 
     // metodo para eliminar cliente de la coleccion
@@ -55,25 +63,20 @@ public class GestionCliente implements IUserCreator {
         clientes.remove(DNI);
     }
 
-    // get metodo para obtener coleccion clientes y loginContrasenas
-    public HashMap<String, Cliente> getClientes() {
-        return clientes;
-    }
-
     // buscar clientes por email
     public Cliente buscarClientePorEmail(String email) throws ClienteNoEncontradoException {
-        for (Cliente с : clientes.values()) {
-            if (с.getEmail().equals(email)) {
-                return с;
+        for (Cliente c : clientes.values()) {
+            if (c.getEmail().equals(email)) {
+                return c;
             }
         }
         throw new ClienteNoEncontradoException("Cliente no encontrado");
     }
 
-    // metodos para mostrar los datos de emppleados
-    public void mostrarCliente(){
-        for (Cliente e : clientes.values()){
-            e.mostrarDatos();
+    // metodos para mostrar todos los clientes
+    public void mostrarClientes() {
+        for (Cliente e : clientes.values()) {
+            e.mostrarCliente();
         }
     }
 }

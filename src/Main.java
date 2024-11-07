@@ -1,35 +1,36 @@
 import Excepciones.ClienteNoEncontradoException;
 import Excepciones.ClienteYaExistenteException;
 import Excepciones.EmpleadoNoEncontradoException;
-import Gestion.GestionAcceso;
-import Gestion.GestionArchivo;
-import Gestion.GestionCliente;
-import Gestion.GestionEmpleado;
+import Gestion.*;
 import Modelo.Menu;
-import Modelo.Usuario;
+
 
 import java.io.IOException;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) throws IOException, EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException {
 
-        GestionEmpleado gestionEmpleado = new GestionEmpleado();
-        GestionCliente gestionCliente = new GestionCliente();
-        GestionAcceso gestionAcceso = new GestionAcceso(gestionEmpleado, gestionCliente);
-        GestionArchivo gestionArchivo = new GestionArchivo(gestionAcceso);
-        Menu menu = new Menu(gestionAcceso);
+        GestorEmpleados gestorEmpleados = new GestorEmpleados();
+        GestorClientes gestorClientes = new GestorClientes();
+        GestorHabitaciones gestorHabitaciones = new GestorHabitaciones();
+        GestorReservas gestorReservas = new GestorReservas(gestorHabitaciones);
+        GestorAccesos gestorAccesos = new GestorAccesos(gestorEmpleados, gestorClientes);
+        GestorArchivos gestorArchivos = new GestorArchivos(gestorAccesos, gestorReservas);
+        Menu menu = new Menu(gestorAccesos);
 
-        // cargar empleados desde archivo JSON
-        gestionArchivo.cargarEmpleadosDesdeArchivo();
-        gestionArchivo.cargarLoginContrasenaDesdeArchivo();
+        // cargamos empleados, login y contrasenas y reservas desde archivos JSON a las colecciones
+        gestorArchivos.cargarEmpleadosDesdeArchivo();
+        gestorArchivos.cargarClientesDesdeArchivo();
+        gestorArchivos.cargarLoginContrasenaDesdeArchivo();
+        gestorArchivos.cargarReservasDesdeArchivo();
 
         menu.start();
 
-        // guardar empleados y login y contrasenas en archivos JSON
-        gestionArchivo.guardarEmpleados();
-        gestionArchivo.guardarLoginContrasena();
+        // guardamos empleados, login y contrasenas y reservas desde colecciones a archivos JSON
+        gestorArchivos.guardarEmpleados();
+        gestorArchivos.guardarClientes();
+        gestorArchivos.guardarLoginContrasena();
+        gestorArchivos.guardarReservas();
     }
 }
 

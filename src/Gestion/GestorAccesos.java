@@ -6,28 +6,27 @@ import Modelo.Cliente;
 import Modelo.Empleado;
 import Modelo.Usuario;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class GestionAcceso {
+public class GestorAccesos {
 
-    private GestionEmpleado gestionEmpleado;
-    private GestionCliente gestionCliente;
+    private GestorEmpleados gestorEmpleados;
+    private GestorClientes gestorClientes;
     private static HashMap<String, String> loginContrasenas = new HashMap<>();
 
     // Constructor
-    public GestionAcceso(GestionEmpleado gestionEmpleado, GestionCliente gestionCliente) {
-        this.gestionEmpleado = gestionEmpleado;
-        this.gestionCliente = gestionCliente;
+    public GestorAccesos(GestorEmpleados gestorEmpleados, GestorClientes gestorClientes) {
+        this.gestorEmpleados = gestorEmpleados;
+        this.gestorClientes = gestorClientes;
     }
 
     // getters y setters
-    public GestionEmpleado getGestionEmpleado() {
-        return gestionEmpleado;
+    public GestorEmpleados getGestorEmpleado() {
+        return gestorEmpleados;
     }
-    public GestionCliente getGestionCliente() {
-        return gestionCliente;
+    public GestorClientes getGestorCliente() {
+        return gestorClientes;
     }
     public static HashMap<String, String> getLoginContrasenas() {
         return loginContrasenas;
@@ -85,11 +84,11 @@ public class GestionAcceso {
 
     // metodo para buscar usuario por email
     public Usuario buscarUsuarioPorEmail(String email) throws EmpleadoNoEncontradoException, ClienteNoEncontradoException {
-        Empleado empleado = gestionEmpleado.buscarEmpleadoPorEmail(email);
+        Empleado empleado = gestorEmpleados.buscarEmpleadoPorEmail(email);
         if (empleado != null) {
             return empleado;
         }
-        Cliente cliente = gestionCliente.buscarClientePorEmail(email);
+        Cliente cliente = gestorClientes.buscarClientePorEmail(email);
         if (cliente != null) {
             return cliente;
         }

@@ -2,19 +2,20 @@ package Modelo;
 
 import Enumeraciones.RoleUsuario;
 import Excepciones.ClienteNoEncontradoException;
+import Excepciones.ClienteYaExistenteException;
 import Excepciones.EmpleadoNoEncontradoException;
-import Gestion.GestionAcceso;
+import Gestion.GestorAccesos;
 
 import java.util.Scanner;
 
 public class Menu {
-    private GestionAcceso gestionAcceso;
+    private GestorAccesos gestorAccesos;
 
-    public Menu(GestionAcceso gestionAcceso) {
-        this.gestionAcceso = gestionAcceso;
+    public Menu(GestorAccesos gestorAccesos) {
+        this.gestorAccesos = gestorAccesos;
     }
 
-    public void start() throws EmpleadoNoEncontradoException, ClienteNoEncontradoException {
+    public void start() throws EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("===============================");
@@ -39,7 +40,7 @@ public class Menu {
         scanner.close();
     }
 
-    private void login(Scanner scanner) throws EmpleadoNoEncontradoException, ClienteNoEncontradoException {
+    private void login(Scanner scanner) throws EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException {
         System.out.println("===============================");
         System.out.println("       Iniciar sesion");
         System.out.println("===============================");
@@ -49,7 +50,7 @@ public class Menu {
         String password = scanner.nextLine();
 
         // Verificar el usuario utilizando
-        Usuario usuario = gestionAcceso.verificarUsuario(email, password);
+        Usuario usuario = gestorAccesos.verificarUsuario(email, password);
 
         if (usuario == null) {
             System.out.println("Volviendo al menu principal...");
@@ -97,21 +98,20 @@ public class Menu {
 
             switch (option) {
                 case 1:
-                    gestionAcceso.getGestionEmpleado().agregarUsuarioAColeccion();
+                    gestorAccesos.getGestorEmpleado().agregarUsuarioAColeccion();
                     break;
                 case 2:
-                    gestionAcceso.getGestionEmpleado().eliminarEmpleadoDeColeccion(scanner);
+                    gestorAccesos.getGestorEmpleado().eliminarEmpleadoDeColeccion(scanner);
                     break;
                 case 3:
-                    gestionAcceso.getGestionEmpleado().editarDatosEmpleado(scanner);
+                    gestorAccesos.getGestorEmpleado().editarDatosEmpleado(scanner);
                     break;
                 case 4:
-                    gestionAcceso.getGestionEmpleado().mostrarEmpleadoPorDNI(scanner);
+                    gestorAccesos.getGestorEmpleado().mostrarEmpleadoPorDNI(scanner);
                     break;
                 case 5:
-                    gestionAcceso.getGestionEmpleado().mostrarEmpleados();
+                    gestorAccesos.getGestorEmpleado().mostrarEmpleados();
                     break;
-
                 case 9:
                     return; // Salir del menú del Administrador
                 default:
@@ -120,14 +120,14 @@ public class Menu {
         }
     }
 
-    private void receptionistMenu(Scanner scanner) {
+    private void receptionistMenu(Scanner scanner) throws ClienteYaExistenteException {
         while (true) {
             System.out.println("===============================");
             System.out.println("     Menu Recepcionista");
             System.out.println("===============================");
-            System.out.println("1. Realizar Check-in");
-            System.out.println("2. Realizar Check-out");
-            System.out.println("3. Hacer una reserva");
+            System.out.println("1. Registrar un cliente"); // listo
+            System.out.println("2. Realizar Check-in");
+            System.out.println("3. Realizar Check-out");
             System.out.println("4. Consultar disponibilidad de habitaciones");
             System.out.println("5. Listar habitaciones ocupadas");
             System.out.println("6. Listar habitaciones disponibles");
@@ -141,8 +141,23 @@ public class Menu {
             if (option == 8) {
                 break; // Salir del menú del Recepcionista
             }
-            // Implementar las acciones correspondientes aquí
-            System.out.println("Funcionalidad no implementada aun.");
+            switch (option) {
+                case 1:
+                    System.out.println("Registrar un cliente");
+                    gestorAccesos.getGestorCliente().agregarUsuarioAColeccion();
+                    break;
+                case 2:
+                    System.out.println("Check-in");
+                    break;
+                case 3:
+                    System.out.println("Check-out");
+                    break;
+                case 8:
+                    return; // Salir del menú del Recepcionista
+                default:
+                    System.out.println("Opción no válida.");
+            }
+
         }
     }
 
