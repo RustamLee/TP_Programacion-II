@@ -30,9 +30,14 @@ public class Menu {
             System.out.println("2. Salir del programa");
             System.out.println("===============================");
             System.out.print("Seleccione una opcion: ");
-            int option = scanner.nextInt();
-            scanner.nextLine(); // Limpiar el buffer
 
+            if (!scanner.hasNextInt()) {
+                System.out.println("Entrada no válida. Por favor, introduzca un número.");
+                scanner.nextLine();
+                continue;
+            }
+            int option = scanner.nextInt();
+            scanner.nextLine();
             if (option == 1) {
                 login(scanner);
             } else if (option == 2) {
@@ -44,6 +49,7 @@ public class Menu {
         }
         scanner.close();
     }
+
 
     private void login(Scanner scanner) throws EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException, HabitacionNoEncontradaException {
         System.out.println("===============================");
