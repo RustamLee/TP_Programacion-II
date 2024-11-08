@@ -4,6 +4,8 @@ import Enumeraciones.ClaseHabitacion;
 import Enumeraciones.EstadoHabitacion;
 import Enumeraciones.SizeHabitacion;
 
+import java.util.Objects;
+
 public class Habitacion {
     private int IdHabitacion;
 
@@ -54,7 +56,6 @@ public class Habitacion {
         this.estado = estado;
     }
 
-
     @Override
     public String toString() {
         return "Habitacion{" +
@@ -63,5 +64,17 @@ public class Habitacion {
                 ", tipo habitacion=" + tipoHabitacion +
                 ", estado=" + estado +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Habitacion that)) return false;
+        return IdHabitacion == that.IdHabitacion && tamano == that.tamano && tipoHabitacion == that.tipoHabitacion && estado == that.estado;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(IdHabitacion, tamano, tipoHabitacion, estado);
     }
 }

@@ -125,6 +125,18 @@ public class GestorHabitaciones {
         }
     }
 
+    // metodo para mostrar todas las habitaciones ocupadas
+    public void mostrarHabitacionesOcupadas() {
+        System.out.println("todas las habitaciones ocupadas");
+        for (Habitacion aux : listaHabitaciones) {
+            if (aux.getEstado() == EstadoHabitacion.OCUPADO) {
+                System.out.println(aux);
+            }
+        }
+    }
+
+
+    // aux metodo para verificar si la habitación existe(se usa en el metodo addHabitacionAColeccion y eliminarHabitacionDeColeccion)
     public boolean isHabitacionExiste(int nuemero_habitacion) {
         for (Habitacion aux : listaHabitaciones) {
             if (aux.getIdHabitacion() == nuemero_habitacion) {

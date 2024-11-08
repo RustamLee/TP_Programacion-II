@@ -143,10 +143,10 @@ public class Menu {
             System.out.println("2. Realizar Check-in"); // listo
             System.out.println("3. Realizar Check-out");// listo
             System.out.println("4. Consultar disponibilidad de habitaciones");
-            System.out.println("5. Listar habitaciones ocupadas");
-            System.out.println("6. Listar habitaciones disponibles");
-            System.out.println("7. Ver datos de un cliente");
-            System.out.println("8. Mostrar todas las reservas");
+            System.out.println("5. Listar habitaciones ocupadas");// listo
+            System.out.println("6. Listar habitaciones disponibles");// listo
+            System.out.println("7. Ver datos de un cliente");// listo
+            System.out.println("8. Mostrar todas las reservas");// listo
             System.out.println("9. Salir");
             System.out.println("===============================");
             System.out.print("Seleccione una opción: ");
@@ -177,8 +177,20 @@ public class Menu {
                     Habitacion h = gestorReservas.getGestorHabitaciones().buscarHabitacionPorNumero(scanner.nextInt());
                     gestorReservas.checkOut(cliente, h);
                     break;
+                case 5:
+                    gestorReservas.getGestorHabitaciones().mostrarHabitacionesOcupadas();
+                    break;
+                case 6:
+                    gestorReservas.getGestorHabitaciones().mostrarHabitacionesDisponibles();
+                    break;
+                case 7:
+                    System.out.println("Ingrese el DNI del cliente: ");
+                    Cliente cliente1 = gestorAccesos.getGestorCliente().buscarClientePorDNI(scanner.nextLine());
+                    cliente1.mostrarCliente();
+                    break;
                 case 8:
                     System.out.println("Mostrando todas las reservas...");
+                    gestorReservas.mostrarReservas();
                     break;
                 case 9:
                     return; // Salir del menú del Recepcionista

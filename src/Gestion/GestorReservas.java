@@ -89,6 +89,10 @@ public class GestorReservas {
     // metodo para mostrar todas las reservas
     public void mostrarReservas() {
         System.out.println("Lista de todas las reservas:");
+        if (reservasPorHabitacion == null || reservasPorHabitacion.isEmpty()) {
+            System.out.println("No hay reservas registradas.");
+            return;
+        }
         for (Map.Entry<Integer, List<Reserva>> entry : reservasPorHabitacion.entrySet()) {
             Integer idHabitacion = entry.getKey();
             List<Reserva> reservas = entry.getValue();

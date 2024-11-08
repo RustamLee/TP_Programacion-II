@@ -3,6 +3,7 @@ package Modelo;
 import Enumeraciones.EstadoHabitacion;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Reserva {
     private int idReserva;
@@ -80,5 +81,15 @@ public class Reserva {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Reserva reserva)) return false;
+        return idReserva == reserva.idReserva && isActive == reserva.isActive && Objects.equals(cliente, reserva.cliente) && Objects.equals(fechaEntrada, reserva.fechaEntrada) && Objects.equals(fechaSalida, reserva.fechaSalida) && Objects.equals(habitacion, reserva.habitacion);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(idReserva, cliente, fechaEntrada, fechaSalida, habitacion, isActive);
+    }
 }
