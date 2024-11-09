@@ -35,6 +35,12 @@ public class GestorReservas {
         if (cliente == null || numeroHabitacion <= 0 || fechaEntrada == null || fechaSalida == null) {
             throw new IllegalArgumentException("El cliente, el número de habitación o las fechas no pueden ser nulos");
         }
+        //PODRIAMOS PONER ESTO:
+       /* // Validar que la fecha de entrada que no sea posterior a la fecha de salida
+    if (fechaEntrada.isAfter(fechaSalida)) {
+        throw new IllegalArgumentException("La fecha de entrada no puede ser posterior a la fecha de salida.");
+    } */
+
         Habitacion habitacion = gestorHabitaciones.buscarHabitacionPorNumero(numeroHabitacion);
         if (!isHabitacionDisponible(habitacion, fechaEntrada, fechaSalida)) {
             throw new HabitacionNoDisponibleException("La habitación no está disponible en las fechas solicitadas.");
@@ -73,6 +79,21 @@ public class GestorReservas {
         }
         // Buscamos la reserva activa para este cliente
         Reserva reservaActiva = null;
+        
+        //PODRIAMOS CAMBIAR ESTO :
+        /*// Obtener todas las reservas de la habitación específica
+    List<Reserva> reservas = reservasPorHabitacion.get(habitacion.getIdHabitacion());
+    
+    // Si hay reservas para esta habitación, buscar la activa para el cliente
+    if (reservas != null) {
+        for (Reserva reserva : reservas) {
+            if (reserva.getCliente().equals(cliente)) {
+                reservaActiva = reserva;
+                break; // Salir del ciclo cuando encontramos la reserva activa
+            }
+        }
+    }*/
+        
         for (Reserva reserva : reservasPorHabitacion.get(habitacion.getIdHabitacion())) {
             if (reserva.getCliente().equals(cliente)) {
                 reservaActiva = reserva;
@@ -84,6 +105,7 @@ public class GestorReservas {
         }
         habitacion.cambiarEstado(EstadoHabitacion.DISPONIBLE);
         reservasPorHabitacion.get(habitacion.getIdHabitacion()).remove(reservaActiva);
+        System.out.println("Check-out realizado correctamente. La habitación está ahora disponible.");
     }
 
     // metodo para mostrar todas las reservas
