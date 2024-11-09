@@ -102,6 +102,28 @@ public class GestorReservas {
         }
     }
 
+    // mostrar reservas por cliente dni
+    public void mostrarReservasPorCliente(int dni) {
+        System.out.println("Lista de reservas para el cliente con DNI " + dni + ":");
+        if (reservasPorHabitacion == null || reservasPorHabitacion.isEmpty()) {
+            System.out.println("No hay reservas registradas.");
+            return;
+        }
+        boolean hayReservas = false;
+        for (Map.Entry<Integer, List<Reserva>> entry : reservasPorHabitacion.entrySet()) {
+            List<Reserva> reservas = entry.getValue();
+            for (Reserva reserva : reservas) {
+                if (reserva.getCliente().getDNI().equals(dni)) {
+                    System.out.println(reserva);
+                    hayReservas = true;
+                }
+            }
+        }
+        if (!hayReservas) {
+            System.out.println("No hay reservas para este cliente.");
+        }
+    }
+
     // aux metodo para mostrar reservas para una habitacion(se usa en mostrarReservas)
     private void mostrarReservasParaHabitacion(List<Reserva> reservas) {
         if (reservas == null || reservas.isEmpty()) {

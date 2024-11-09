@@ -148,18 +148,17 @@ public class Menu {
             System.out.println("1. Registrar un cliente"); // listo
             System.out.println("2. Realizar Check-in"); // listo
             System.out.println("3. Realizar Check-out");// listo
-            System.out.println("4. Consultar disponibilidad de habitaciones");
+            System.out.println("4. Consultar disponibilidad de habitaciones"); // listo
             System.out.println("5. Listar habitaciones ocupadas");// listo
-            System.out.println("6. Listar habitaciones disponibles");// listo
-            System.out.println("7. Ver datos de un cliente");// listo
-            System.out.println("8. Mostrar todas las reservas");// listo
-            System.out.println("9. Salir");
+            System.out.println("6. Ver datos de un cliente");// listo
+            System.out.println("7. Mostrar todas las reservas");// listo
+            System.out.println("8. Salir");
             System.out.println("===============================");
             System.out.print("Seleccione una opción: ");
             int option = scanner.nextInt();
             scanner.nextLine();
 
-            if (option == 9) {
+            if (option == 8) {
                 break; // Salir del menú del Recepcionista
             }
             switch (option) {
@@ -174,7 +173,7 @@ public class Menu {
                     scanner.nextLine();
                     LocalDate fechaEntrada = GestorReservas.obtenerFecha(scanner, "Ingrese la fecha de entrada (yyyy-MM-dd): ");
                     LocalDate fechaSalida = GestorReservas.obtenerFecha(scanner, "Ingrese la fecha de salida (yyyy-MM-dd): ");
-                    gestorReservas.checkIn(c,numHabitacion, fechaEntrada, fechaSalida);
+                    gestorReservas.checkIn(c, numHabitacion, fechaEntrada, fechaSalida);
                     break;
                 case 3:
                     System.out.println("Ingrese el DNI del cliente: ");
@@ -183,22 +182,22 @@ public class Menu {
                     Habitacion h = gestorReservas.getGestorHabitaciones().buscarHabitacionPorNumero(scanner.nextInt());
                     gestorReservas.checkOut(cliente, h);
                     break;
+                case 4:
+                    gestorReservas.getGestorHabitaciones().mostrarHabitacionesDisponibles();
+                    break;
                 case 5:
                     gestorReservas.getGestorHabitaciones().mostrarHabitacionesOcupadas();
                     break;
                 case 6:
-                    gestorReservas.getGestorHabitaciones().mostrarHabitacionesDisponibles();
-                    break;
-                case 7:
                     System.out.println("Ingrese el DNI del cliente: ");
                     Cliente cliente1 = gestorAccesos.getGestorCliente().buscarClientePorDNI(scanner.nextLine());
                     cliente1.mostrarCliente();
                     break;
-                case 8:
+                case 7:
                     System.out.println("Mostrando todas las reservas...");
                     gestorReservas.mostrarReservas();
                     break;
-                case 9:
+                case 8:
                     return; // Salir del menú del Recepcionista
                 default:
                     System.out.println("Opción no válida.");
@@ -212,7 +211,7 @@ public class Menu {
             System.out.println("===============================");
             System.out.println("      Menu Cliente");
             System.out.println("===============================");
-            System.out.println("1. Consultar mi reserva");
+            System.out.println("1. Consultar mi reserva"); // listo
             System.out.println("2. Realizar una nueva reserva");
             System.out.println("3. Ver historial de estancias");
             System.out.println("4. Salir");
@@ -224,8 +223,24 @@ public class Menu {
             if (option == 4) {
                 break; // Salir del menu del Cliente
             }
+            switch (option){
+                case 1:
+                    System.out.println("Ingrese su DNI: ");
+                    int dni = scanner.nextInt();
+                    gestorReservas.mostrarReservasPorCliente(dni);
+                    break;
+                case 2:
+                    System.out.println("Realizar una nueva reserva");
+                    break;
+                case 3:
+                    System.out.println("Ver historial de estancias.");
+                    break;
+                case 4:
+                    return; // Salir del menu del Cliente
+                default:
+                    System.out.println("Opción no válida.");
+            }
 
-            System.out.println("Funcionalidad no implementada aun.");
         }
     }
 }

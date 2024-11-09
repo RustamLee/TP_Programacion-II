@@ -38,26 +38,33 @@ public class GestorAccesos {
     }
 
     // el metodo para verificar que contrasena esta cambiada
-    public Usuario verificarUsuario(String login, String contrasenaIngresada) throws EmpleadoNoEncontradoException, ClienteNoEncontradoException {
+    public Usuario verificarUsuario(String login, String contrasenaIngresada) {
         String contrasenaEnColeccion = loginContrasenas.get(login);
         if (contrasenaEnColeccion == null) {
-            System.out.println("Usuario no encontrado.");
             return null;
         }
-        Usuario usuario = buscarUsuarioPorEmail(login);
-        if (usuario != null) {
-            if (contrasenaEnColeccion.equals(contrasenaIngresada)) {
-                if (contrasenaEnColeccion.equals(usuario.getDNI())) {
-                    cambiarContrasena(usuario);
-                }
-                return usuario;
-            } else {
-                System.out.println("Contraseña incorrecta.");
-            }
-        } else {
-            System.out.println("Usuario no encontrado.");
+        Usuario usuario = null;
+        try {
+            usuario = gestorEmpleados.buscarEmpleadoPorEmail(login);
+        } catch (EmpleadoNoEncontradoException e) {
+            System.err.println("Empleado no encontrado.");
         }
-
+        if (usuario == null) {
+            try {
+                usuario = gestorClientes.buscarClientePorEmail(login);
+            } catch (ClienteNoEncontradoException e) {
+                System.out.println("Usuario no encontrado.");
+                return null;
+            }
+        }
+        if (contrasenaEnColeccion.equals(contrasenaIngresada)) {
+            if (contrasenaEnColeccion.equals(usuario.getDNI())) {
+                cambiarContrasena(usuario);
+            }
+            return usuario;
+        } else {
+            System.out.println("Contraseña incorrecta.");
+        }
         return null;
     }
 
