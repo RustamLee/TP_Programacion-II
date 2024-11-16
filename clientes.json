@@ -1,11 +1,1 @@
-{
-  "999": {
-    "direccion": "Berlin",
-    "telefono": "32324243",
-    "nombre": "Olaph",
-    "apellido": "Sholz",
-    "DNI": "999",
-    "role": "CLIENTE",
-    "email": "les"
-  }
-}
+{"999":{"direccion":"Berlin","telefono":"32324243","nombre":"Olaph","apellido":"Sholz","DNI":"999","role":"CLIENTE","email":"les"},"777":{"direccion":"MDP","telefono":"555","nombre":"Lucas","apellido":"Lucas","DNI":"777","role":"CLIENTE","email":"777@mail"}}

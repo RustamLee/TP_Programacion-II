@@ -26,6 +26,7 @@ public class GestorReservas {
     public Map<Integer, List<Reserva>> getReservasPorHabitacion() {
         return reservasPorHabitacion;
     }
+
     public GestorHabitaciones getGestorHabitaciones() {
         return gestorHabitaciones;
     }
@@ -35,12 +36,10 @@ public class GestorReservas {
         if (cliente == null || numeroHabitacion <= 0 || fechaEntrada == null || fechaSalida == null) {
             throw new IllegalArgumentException("El cliente, el número de habitación o las fechas no pueden ser nulos");
         }
-        //PODRIAMOS PONER ESTO:
-       /* // Validar que la fecha de entrada que no sea posterior a la fecha de salida
-    if (fechaEntrada.isAfter(fechaSalida)) {
-        throw new IllegalArgumentException("La fecha de entrada no puede ser posterior a la fecha de salida.");
-    } */
-
+        // Validar que la fecha de entrada que no sea posterior a la fecha de salida
+        if (fechaEntrada.isAfter(fechaSalida)) {
+            throw new IllegalArgumentException("La fecha de entrada no puede ser posterior a la fecha de salida.");
+        }
         Habitacion habitacion = gestorHabitaciones.buscarHabitacionPorNumero(numeroHabitacion);
         if (!isHabitacionDisponible(habitacion, fechaEntrada, fechaSalida)) {
             throw new HabitacionNoDisponibleException("La habitación no está disponible en las fechas solicitadas.");
@@ -77,36 +76,29 @@ public class GestorReservas {
         if (cliente == null || habitacion == null) {
             throw new IllegalArgumentException("El cliente o la habitación no pueden ser nulos");
         }
-        // Buscamos la reserva activa para este cliente
+        // Obtener todas las reservas de la habitación específica (o lista vacía si no hay reservas)
+        List<Reserva> reservas = reservasPorHabitacion.getOrDefault(habitacion.getIdHabitacion(), new ArrayList<>());
+
+        // Buscar la reserva activa para el cliente
         Reserva reservaActiva = null;
-        
-        //PODRIAMOS CAMBIAR ESTO :
-        /*// Obtener todas las reservas de la habitación específica
-    List<Reserva> reservas = reservasPorHabitacion.get(habitacion.getIdHabitacion());
-    
-    // Si hay reservas para esta habitación, buscar la activa para el cliente
-    if (reservas != null) {
         for (Reserva reserva : reservas) {
             if (reserva.getCliente().equals(cliente)) {
                 reservaActiva = reserva;
                 break; // Salir del ciclo cuando encontramos la reserva activa
             }
         }
-    }*/
-        
-        for (Reserva reserva : reservasPorHabitacion.get(habitacion.getIdHabitacion())) {
-            if (reserva.getCliente().equals(cliente)) {
-                reservaActiva = reserva;
-                break;
-            }
-        }
         if (reservaActiva == null) {
             throw new ReservaNoEncontradaException("No se encontró una reserva activa para este cliente.");
         }
         habitacion.cambiarEstado(EstadoHabitacion.DISPONIBLE);
-        reservasPorHabitacion.get(habitacion.getIdHabitacion()).remove(reservaActiva);
+        reservas.remove(reservaActiva);
+
+        if (reservas.isEmpty()) {
+            reservasPorHabitacion.remove(habitacion.getIdHabitacion());
+        }
         System.out.println("Check-out realizado correctamente. La habitación está ahora disponible.");
     }
+
 
     // metodo para mostrar todas las reservas
     public void mostrarReservas() {

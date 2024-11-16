@@ -1,1 +1,1 @@
-[{"IdHabitacion":100,"tamano":"SINGLE","tipoHabitacion":"ECONOMICO","estado":"OCUPADO"},{"IdHabitacion":200,"tamano":"TWIN","tipoHabitacion":"STANDARD","estado":"DISPONIBLE"}]
+[{"IdHabitacion":100,"tamano":"SINGLE","tipoHabitacion":"ECONOMICO","estado":"DISPONIBLE"},{"IdHabitacion":200,"tamano":"TWIN","tipoHabitacion":"STANDARD","estado":"DISPONIBLE"}]
