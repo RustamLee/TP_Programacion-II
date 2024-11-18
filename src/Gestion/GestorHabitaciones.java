@@ -98,7 +98,22 @@ public class GestorHabitaciones {
                 System.out.println("Error: Tamaño de habitación no válido. Debe ser SINGLE, TWIN o FAMILY.");
             }
         }
-        Habitacion nuevaHabitacion = new Habitacion(numeroHabitacion, size, clase);
+        double precioPorDia = 0;
+        while (true) {
+            System.out.println("Ingrese el precio por día de la habitación: ");
+            String inputPrecio = scanner.nextLine().trim();
+            if (inputPrecio.isEmpty()) {
+                System.out.println("Error: El precio por día no puede estar vacío o contener solo espacios.");
+            } else {
+                try {
+                    precioPorDia = Double.parseDouble(inputPrecio);
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("Error: El precio por día debe ser un número válido.");
+                }
+            }
+        }
+        Habitacion nuevaHabitacion = new Habitacion(numeroHabitacion, size, clase, precioPorDia);
         addHabitacionAColeccion(nuevaHabitacion);
     }
 

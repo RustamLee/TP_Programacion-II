@@ -8,42 +8,43 @@ import java.util.Objects;
 
 public class Habitacion {
     private int IdHabitacion;
-
     private SizeHabitacion tamano;
-
     private ClaseHabitacion tipoHabitacion;
-
     private EstadoHabitacion estado;
+    private double precioPorDia;
 
-    public Habitacion(int IdHabitacion, SizeHabitacion tamano, ClaseHabitacion tipoHabitacion) {
+    public Habitacion(int IdHabitacion, SizeHabitacion tamano, ClaseHabitacion tipoHabitacion, double precioPorDia) {
         this.IdHabitacion = IdHabitacion;
-        this.tipoHabitacion = tipoHabitacion;
-        this.estado = EstadoHabitacion.DISPONIBLE;
         this.tamano = tamano;
+        this.tipoHabitacion = tipoHabitacion;
+        this.precioPorDia = precioPorDia;
+        this.estado = EstadoHabitacion.DISPONIBLE;
     }
 
+    // getters y setters
     public int getIdHabitacion() {
         return IdHabitacion;
     }
-
     public void setIdHabitacion(int numeroHabitacion) {
         this.IdHabitacion = numeroHabitacion;
     }
-
-
     public SizeHabitacion getTamano() {
         return tamano;
     }
-
     public void setTamano(SizeHabitacion tamano) {
         this.tamano = tamano;
     }
-
-
     public ClaseHabitacion getTipoHabitacion() {
         return tipoHabitacion;
     }
+    public void setPrecioPorDia(double precioPorDia) {
+        this.precioPorDia = precioPorDia;
+    }
+    public double getPrecioPorDia() {
+        return precioPorDia;
+    }
 
+    // otros metodos
     public void cambiarTipoHabitacion(ClaseHabitacion tipoHabitacion) {
         this.tipoHabitacion = tipoHabitacion;
     }
@@ -63,6 +64,7 @@ public class Habitacion {
                 ", tamaño=" + tamano +
                 ", tipo habitacion=" + tipoHabitacion +
                 ", estado=" + estado +
+                ", precio por dia=" + precioPorDia +
                 '}';
     }
 
