@@ -39,6 +39,15 @@ public class GestorReservas {
         realizarCheckIn(cliente, habitacion, fechaEntrada, fechaSalida);
     }
 
+    public void calcularPrecioTotal(LocalDate fechaEntrada, LocalDate fechaSalida, Habitacion habitacion) {
+        long diasEstancia = java.time.temporal.ChronoUnit.DAYS.between(fechaEntrada, fechaSalida);
+        if (diasEstancia <= 0) {
+            throw new IllegalArgumentException("La duración de la estancia debe ser mayor a cero días.");
+        }
+        double precioPorDia = habitacion.getPrecioPorDia();
+        double total_final = precioPorDia * diasEstancia;
+    }
+
     // aux metodo para obtener una habitacion
     private Habitacion obtenerHabitacion(int numeroHabitacion) throws HabitacionNoEncontradaException {
         Habitacion habitacion = gestorHabitaciones.buscarHabitacionPorNumero(numeroHabitacion);

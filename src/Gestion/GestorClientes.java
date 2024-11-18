@@ -109,6 +109,48 @@ public class GestorClientes implements IUserCreator {
     }
 
 
+    // alternativa al metodo anterior
+//    public void agregarUsuarioAColeccion() throws ClienteYaExistenteException {
+//        String nombre, apellido, DNI, email, direccion, telefono;
+//        Scanner scanner = new Scanner(System.in);
+//        while (true) {
+//            System.out.println("Ingrese el nombre del cliente: ");
+//            nombre = scanner.nextLine();
+//            if (nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ]+")) {
+//                break;
+//            } else {
+//                System.out.println("intente nuevamente");
+//            }
+//        }
+//        while (true) {
+//            System.out.println("Ingrese el apellido del cliente: ");
+//            apellido = scanner.nextLine();
+//            if (apellido.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ]+")) {
+//                break;
+//            } else {
+//                System.out.println("intente nuevamente");
+//            }
+//        }
+//        while (true) {
+//            System.out.println("Ingrese el DNI del cliente: ");
+//            DNI = scanner.nextLine();
+//            if (DNI.matches("\\d+")) {
+//                break;
+//            } else {
+//                System.out.println("El DNI solo debe contener números. Intente nuevamente.");
+//            }
+//        }
+//        RoleUsuario role = RoleUsuario.CLIENTE;
+//        System.out.println("Ingrese el email del cliente: ");
+//        email = scanner.nextLine();
+//        System.out.println("Ingrese la direccion del cliente: ");
+//        direccion = scanner.nextLine();
+//        System.out.println("Ingrese el telefono del cliente: ");
+//        telefono = scanner.nextLine();
+//        Cliente cliente = new Cliente(nombre, apellido, DNI, role, email, direccion, telefono);
+//        addClienteToCollection(cliente);
+//    }
+
     // metodo para eliminar cliente de la coleccion
     public void eliminarClienteDeColeccion(String DNI) throws ClienteNoEncontradoException {
         if (!clientes.containsKey(DNI)) {
