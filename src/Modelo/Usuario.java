@@ -32,6 +32,12 @@ public abstract class Usuario {
     }
     public static void setGestionUsuario(GestorAccesos gestorAccesos) {
     }
+    public void setRole(RoleUsuario nuevoRole) {
+        this.role = nuevoRole;
+    }
+    public void setEmail(String nuevoEmail) {
+        this.email = nuevoEmail;
+    }
 
     // otros metodos
     public String getDniPorEmail(String email) {

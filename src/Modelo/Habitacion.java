@@ -77,4 +77,8 @@ public class Habitacion {
     public int hashCode() {
         return Objects.hash(IdHabitacion, tamano, tipoHabitacion, estado);
     }
+
+    public int getNumero() {
+        return IdHabitacion;
+    }
 }

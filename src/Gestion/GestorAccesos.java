@@ -41,13 +41,14 @@ public class GestorAccesos {
     public Usuario verificarUsuario(String login, String contrasenaIngresada) {
         String contrasenaEnColeccion = loginContrasenas.get(login);
         if (contrasenaEnColeccion == null) {
+            System.out.println("Usuario no encontrado.");
             return null;
         }
+
         Usuario usuario = null;
         try {
             usuario = gestorEmpleados.buscarEmpleadoPorEmail(login);
         } catch (EmpleadoNoEncontradoException e) {
-            System.err.println("Empleado no encontrado.");
         }
         if (usuario == null) {
             try {
@@ -58,7 +59,7 @@ public class GestorAccesos {
             }
         }
         if (contrasenaEnColeccion.equals(contrasenaIngresada)) {
-            if (contrasenaEnColeccion.equals(usuario.getDNI())) {
+            if (usuario instanceof Empleado && contrasenaEnColeccion.equals(usuario.getDNI())) {
                 cambiarContrasena(usuario);
             }
             return usuario;
@@ -67,6 +68,7 @@ public class GestorAccesos {
         }
         return null;
     }
+
 
     // el metodo para cambiarContrasena
     public void cambiarContrasena(Usuario usuario) {

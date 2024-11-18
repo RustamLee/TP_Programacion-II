@@ -1,3 +1,4 @@
+
 package Gestion;
 
 import Enumeraciones.EstadoHabitacion;
@@ -26,65 +27,70 @@ public class GestorReservas {
     public Map<Integer, List<Reserva>> getReservasPorHabitacion() {
         return reservasPorHabitacion;
     }
-
     public GestorHabitaciones getGestorHabitaciones() {
         return gestorHabitaciones;
     }
 
-    // metodo para realizar checkIN
+    // metodo check-in
     public void checkIn(Cliente cliente, int numeroHabitacion, LocalDate fechaEntrada, LocalDate fechaSalida) throws HabitacionNoDisponibleException, HabitacionNoEncontradaException {
-        if (cliente == null || numeroHabitacion <= 0 || fechaEntrada == null || fechaSalida == null) {
-            throw new IllegalArgumentException("El cliente, el número de habitación o las fechas no pueden ser nulos");
-        }
-        // Validar que la fecha de entrada que no sea posterior a la fecha de salida
-        if (fechaEntrada.isAfter(fechaSalida)) {
-            throw new IllegalArgumentException("La fecha de entrada no puede ser posterior a la fecha de salida.");
-        }
+        validarDatosCheckIn(cliente, numeroHabitacion, fechaEntrada, fechaSalida);
+        Habitacion habitacion = obtenerHabitacion(numeroHabitacion);
+        validarDisponibilidadHabitacion(habitacion, fechaEntrada, fechaSalida);
+        realizarCheckIn(cliente, habitacion, fechaEntrada, fechaSalida);
+    }
+
+    // aux metodo para obtener una habitacion
+    private Habitacion obtenerHabitacion(int numeroHabitacion) throws HabitacionNoEncontradaException {
         Habitacion habitacion = gestorHabitaciones.buscarHabitacionPorNumero(numeroHabitacion);
+        if (habitacion == null) {
+            throw new HabitacionNoEncontradaException("La habitación no existe.");
+        }
+        return habitacion;
+    }
+
+    // aux metodo para validar la disponibilidad de la habitacion
+    private void validarDisponibilidadHabitacion(Habitacion habitacion, LocalDate fechaEntrada, LocalDate fechaSalida) throws HabitacionNoDisponibleException {
         if (!isHabitacionDisponible(habitacion, fechaEntrada, fechaSalida)) {
             throw new HabitacionNoDisponibleException("La habitación no está disponible en las fechas solicitadas.");
         }
+    }
+
+    // metodo aux para comprobar si la habitacion esta disponible en las fechas concretas
+    private boolean isHabitacionDisponible(Habitacion habitacion, LocalDate fechaEntrada, LocalDate fechaSalida) {
+        if (habitacion.getEstado() != EstadoHabitacion.DISPONIBLE) {
+            return false;
+        }
+        List<Reserva> reservas = reservasPorHabitacion.get(habitacion.getIdHabitacion());
+        if (reservas == null || reservas.isEmpty()) {
+            return true;
+        }
+        for (Reserva reserva : reservas) {
+            if (fechaEntrada.isBefore(reserva.getFechaSalida()) && fechaSalida.isAfter(reserva.getFechaEntrada())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // metodo aux para realizar el check-in
+    private void realizarCheckIn(Cliente cliente, Habitacion habitacion, LocalDate fechaEntrada, LocalDate fechaSalida) {
         habitacion.cambiarEstado(EstadoHabitacion.OCUPADO);
         Reserva nuevaReserva = new Reserva(cliente, habitacion, fechaEntrada, fechaSalida);
         reservasPorHabitacion.computeIfAbsent(habitacion.getIdHabitacion(), k -> new ArrayList<>()).add(nuevaReserva);
         System.out.println("Reserva realizada!");
     }
 
-    // metodo para verificar si la habitación está disponible en las FECHAS CONCRETAS
-    private boolean isHabitacionDisponible(Habitacion habitacion, LocalDate fechaEntrada, LocalDate fechaSalida) {
-        // Verificamos el estado de la habitación
-        if (habitacion.getEstado() != EstadoHabitacion.DISPONIBLE) {
-            return false; // La habitación no está disponible
-        }
-        // Obtenemos las reservas de la habitación
-        List<Reserva> reservas = reservasPorHabitacion.get(habitacion.getIdHabitacion());
-        // Si no hay reservas para esta habitación, está disponible
-        if (reservas == null || reservas.isEmpty()) {
-            return true;
-        }
-        // Comprobamos si alguna de las reservas existentes se superpone con las fechas solicitadas
-        for (Reserva reserva : reservas) {
-            if (fechaEntrada.isBefore(reserva.getFechaSalida()) && fechaSalida.isAfter(reserva.getFechaEntrada())) {
-                return false; // La habitación ya está reservada para este periodo
-            }
-        }
-        return true; // La habitación está disponible
-    }
-
-    // metodo para realizar checkOUT
+    //  check-out
     public void checkOut(Cliente cliente, Habitacion habitacion) throws ReservaNoEncontradaException {
         if (cliente == null || habitacion == null) {
             throw new IllegalArgumentException("El cliente o la habitación no pueden ser nulos");
         }
-        // Obtener todas las reservas de la habitación específica (o lista vacía si no hay reservas)
         List<Reserva> reservas = reservasPorHabitacion.getOrDefault(habitacion.getIdHabitacion(), new ArrayList<>());
-
-        // Buscar la reserva activa para el cliente
         Reserva reservaActiva = null;
         for (Reserva reserva : reservas) {
             if (reserva.getCliente().equals(cliente)) {
                 reservaActiva = reserva;
-                break; // Salir del ciclo cuando encontramos la reserva activa
+                break;
             }
         }
         if (reservaActiva == null) {
@@ -92,13 +98,11 @@ public class GestorReservas {
         }
         habitacion.cambiarEstado(EstadoHabitacion.DISPONIBLE);
         reservas.remove(reservaActiva);
-
         if (reservas.isEmpty()) {
             reservasPorHabitacion.remove(habitacion.getIdHabitacion());
         }
         System.out.println("Check-out realizado correctamente. La habitación está ahora disponible.");
     }
-
 
     // metodo para mostrar todas las reservas
     public void mostrarReservas() {
@@ -107,6 +111,7 @@ public class GestorReservas {
             System.out.println("No hay reservas registradas.");
             return;
         }
+
         for (Map.Entry<Integer, List<Reserva>> entry : reservasPorHabitacion.entrySet()) {
             Integer idHabitacion = entry.getKey();
             List<Reserva> reservas = entry.getValue();
@@ -116,13 +121,14 @@ public class GestorReservas {
         }
     }
 
-    // mostrar reservas por cliente dni
-    public void mostrarReservasPorCliente(int dni) {
+    // metodo para mostrar las reservas de un cliente concreto por dni
+    public void mostrarReservasPorCliente(String dni) {
         System.out.println("Lista de reservas para el cliente con DNI " + dni + ":");
         if (reservasPorHabitacion == null || reservasPorHabitacion.isEmpty()) {
             System.out.println("No hay reservas registradas.");
             return;
         }
+
         boolean hayReservas = false;
         for (Map.Entry<Integer, List<Reserva>> entry : reservasPorHabitacion.entrySet()) {
             List<Reserva> reservas = entry.getValue();
@@ -133,12 +139,13 @@ public class GestorReservas {
                 }
             }
         }
+
         if (!hayReservas) {
             System.out.println("No hay reservas para este cliente.");
         }
     }
 
-    // aux metodo para mostrar reservas para una habitacion(se usa en mostrarReservas)
+    // metodo para mostrar las reservas de una habitacion concreta por numero
     private void mostrarReservasParaHabitacion(List<Reserva> reservas) {
         if (reservas == null || reservas.isEmpty()) {
             System.out.println("No hay reservas para esta habitación.");
@@ -149,20 +156,43 @@ public class GestorReservas {
         }
     }
 
-    // aux metodo para obtener object LocalDate desde el usuario (se usa en checkIN)
-    public static LocalDate obtenerFecha(Scanner scanner, String mensaje) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    // aux metodo para obtener una fecha (se usa en el menu)
+    public LocalDate obtenerFecha(Scanner scanner, String mensaje) {
+        DateTimeFormatter[] formatters = {
+                DateTimeFormatter.ofPattern("yyyy-MM-dd"),
+                DateTimeFormatter.ofPattern("dd-MM-yyyy"),
+                DateTimeFormatter.ofPattern("MM/dd/yyyy")
+        };
         LocalDate fecha = null;
         while (fecha == null) {
             try {
                 System.out.print(mensaje);
                 String fechaStr = scanner.nextLine();
-                fecha = LocalDate.parse(fechaStr, formatter);
+                for (DateTimeFormatter formatter : formatters) {
+                    try {
+                        fecha = LocalDate.parse(fechaStr, formatter);
+                        break;
+                    } catch (Exception ignored) {
+                    }
+                }
+                if (fecha == null) {
+                    throw new Exception("Formato de fecha incorrecto. Intente nuevamente.");
+                }
             } catch (Exception e) {
-                System.out.println("Error: la fecha debe tener el formato yyyy-MM-dd.");
+                System.out.println(e.getMessage());
             }
         }
         return fecha;
     }
 
+
+    // un metodo aux para validar los datos del check-in
+    private void validarDatosCheckIn(Cliente cliente, int numeroHabitacion, LocalDate fechaEntrada, LocalDate fechaSalida) {
+        if (cliente == null || numeroHabitacion <= 0 || fechaEntrada == null || fechaSalida == null) {
+            throw new IllegalArgumentException("El cliente, el número de habitación o las fechas no pueden ser nulos");
+        }
+        if (fechaEntrada.isAfter(fechaSalida)) {
+            throw new IllegalArgumentException("La fecha de entrada no puede ser posterior a la fecha de salida.");
+        }
+    }
 }

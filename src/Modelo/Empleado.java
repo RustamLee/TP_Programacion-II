@@ -26,7 +26,7 @@ public class Empleado extends Usuario {
     }
 
     public void mostrarEmpleado() {
-        System.out.println("Nombre:" + nombre + " Apellido:" + apellido + " DNI:" + DNI +"Role:"+ role+" Email:" + email + " Teléfono:" + telefono);
+        System.out.println("Nombre:" + nombre + " Apellido:" + apellido + " DNI:" + DNI +" Role:"+ role+" Email:" + email + " Teléfono:" + telefono);
     }
 
     @Override
