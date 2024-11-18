@@ -46,22 +46,36 @@ public class GestorArchivos {
         }
     }
 
+    // metodo generico para cargar datos desde un archivo JSON
+    private <T> void cargarDesdeArchivo(String path, Map<String, T> coleccion, Type type) throws IOException {
+        isArchivoExiste(path, new HashMap<>());
+        try (FileReader reader = new FileReader(path)) {
+            Map<String, T> dataDeArchivo = gson.fromJson(reader, type);
+            if (dataDeArchivo != null) {
+                coleccion.putAll(dataDeArchivo);
+            }
+        } catch (IOException e) {
+            System.err.println("Error verificando o creando el archivo: " + e.getMessage());
+        }
+    }
+
+    // metodo generico para guardar datos en un archivo JSON
+    private <T> void guardarEnArchivo(String path, Map<String, T> coleccion) {
+        try (FileWriter writer = new FileWriter(path)) {
+            gson.toJson(coleccion, writer);
+        } catch (IOException e) {
+            System.err.println("Error guardando los datos: " + e.getMessage());
+        }
+    }
+
     // guardamos empleados en un archivo JSON
     public void guardarEmpleados() {
-        try (FileWriter writer = new FileWriter(EMPLEADOS_PATH)) {
-            gson.toJson(gestorAccesos.getGestorEmpleado().getEmpleados(), writer);
-        } catch (IOException e) {
-            System.err.println("Error guardando empleados: " + e.getMessage());
-        }
+        guardarEnArchivo(EMPLEADOS_PATH, gestorAccesos.getGestorEmpleado().getEmpleados());
     }
 
     // guardamos clientes en un archivo JSON
     public void guardarClientes() {
-        try (FileWriter writer = new FileWriter(CLIENTES_PATH)) {
-            gson.toJson(gestorAccesos.getGestorCliente().getClientes(), writer);
-        } catch (IOException e) {
-            System.err.println("Error guardando clientes: " + e.getMessage());
-        }
+        guardarEnArchivo(CLIENTES_PATH, gestorAccesos.getGestorCliente().getClientes());
     }
 
     // guardamos login y contrasena en un archivo JSON
@@ -92,34 +106,17 @@ public class GestorArchivos {
         }
     }
 
+
     // cargar empleados desde el archivo JSON al colección empleados
     public void cargarEmpleadosDesdeArchivo() throws IOException {
-        isArchivoExiste(EMPLEADOS_PATH, new HashMap<String, Empleado>());
-        try (FileReader reader = new FileReader(EMPLEADOS_PATH)) {
-            Type type = new TypeToken<HashMap<String, Empleado>>() {
-            }.getType();
-            HashMap<String, Empleado> empleadosDeArchivo = gson.fromJson(reader, type);
-            if (empleadosDeArchivo != null) {
-                gestorAccesos.getGestorEmpleado().getEmpleados().putAll(empleadosDeArchivo);
-            }
-        } catch (IOException e) {
-            System.err.println("Error verificando o creando el archivo de empleados: " + e.getMessage());
-        }
+        Type type = new TypeToken<HashMap<String, Empleado>>(){}.getType();
+        cargarDesdeArchivo(EMPLEADOS_PATH, gestorAccesos.getGestorEmpleado().getEmpleados(), type);
     }
 
     // cargar clientes desde el archivo JSON al colección clientes
     public void cargarClientesDesdeArchivo() throws IOException {
-        isArchivoExiste(CLIENTES_PATH, new HashMap<String, Cliente>());
-        try (FileReader reader = new FileReader(CLIENTES_PATH)) {
-            Type type = new TypeToken<HashMap<String, Cliente>>() {
-            }.getType();
-            HashMap<String, Cliente> clientesDeArchivo = gson.fromJson(reader, type);
-            if (clientesDeArchivo != null) {
-                gestorAccesos.getGestorCliente().getClientes().putAll(clientesDeArchivo);
-            }
-        } catch (IOException e) {
-            System.err.println("Error verificando o creando el archivo de clientes: " + e.getMessage());
-        }
+        Type type = new TypeToken<HashMap<String, Cliente>>(){}.getType();
+        cargarDesdeArchivo(CLIENTES_PATH, gestorAccesos.getGestorCliente().getClientes(), type);
     }
 
     // cargar login y contrasena desde el archivo JSON al colección loginContrasenas
