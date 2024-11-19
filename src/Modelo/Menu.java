@@ -145,10 +145,8 @@ public class Menu {
                             System.out.println("Número de habitación inválido. Intente nuevamente.");
                         }
                     }
-
                     LocalDate fechaEntrada = gestorReservas.obtenerFecha(scanner, "Ingrese la fecha de entrada (yyyy-MM-dd o dd-MM-yyyy o MM/dd/yyyy): ");
                     LocalDate fechaSalida = gestorReservas.obtenerFecha(scanner, "Ingrese la fecha de salida (yyyy-MM-dd o dd-MM-yyyy o MM/dd/yyyy): ");
-
                     try {
                         gestorReservas.checkIn(clienteCheckIn, numeroHabitacion, fechaEntrada, fechaSalida);
                         System.out.println("Check-in realizado con éxito.");
@@ -167,15 +165,14 @@ public class Menu {
                         break;
                     }
                     System.out.println("Ingrese el número de habitación: ");
+                    scanner.nextLine();
                     Habitacion habitacionCheckOut = gestorReservas.getGestorHabitaciones().buscarHabitacionPorNumero(scanner.nextInt());
                     if (habitacionCheckOut == null) {
                         System.out.println("Habitación no encontrada.");
                         break;
                     }
-
                     try {
                         gestorReservas.checkOut(clienteCheckOut, habitacionCheckOut);
-                        System.out.println("Check-out realizado correctamente.");
                     } catch (ReservaNoEncontradaException e) {
                         System.out.println("Error durante el check-out: " + e.getMessage());
                     } catch (Exception e) {
@@ -206,36 +203,20 @@ public class Menu {
 
     private void clientMenu(Scanner scanner, Cliente cliente) {
         while (true) {
-            System.out.println("===============================");
-            System.out.println("      Menu Cliente");
-            System.out.println("===============================");
-            System.out.println("1. Consultar mi reserva");
-            System.out.println("2. Realizar una nueva reserva");
-            System.out.println("3. Ver historial de estancias");
-            System.out.println("4. Salir");
-            System.out.println("===============================");
-            System.out.print("Seleccione una opcion: ");
+            mostrarMenuCliente();
             String input = scanner.nextLine().trim();
-
             if (input.isEmpty()) {
                 System.out.println("Entrada no válida. Por favor, introduzca un número.");
                 continue;
             }
-
             try {
                 int option = Integer.parseInt(input);
-
-                if (option == 4) {
-                    break;
-                }
+                if (option == 3) break;
                 switch (option) {
                     case 1:
                         gestorReservas.mostrarReservasPorCliente(cliente.getDNI());
                         break;
                     case 2:
-                        System.out.println("Realizar una nueva reserva");
-                        break;
-                    case 3:
                         System.out.println("Ver historial de estancias.");
                         break;
                     default:
@@ -288,6 +269,17 @@ public class Menu {
         System.out.println("7. Mostrar todas las reservas");
         System.out.println("8. Salir");
         System.out.println("===============================");
+    }
+
+    private void mostrarMenuCliente() {
+        System.out.println("===============================");
+        System.out.println("      Menu Cliente");
+        System.out.println("===============================");
+        System.out.println("1. Consultar mi reserva activa");
+        System.out.println("2. Ver historial de estancias");
+        System.out.println("3. Salir");
+        System.out.println("===============================");
+        System.out.print("Seleccione una opcion: ");
     }
 
 }

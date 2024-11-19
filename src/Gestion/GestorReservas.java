@@ -39,15 +39,6 @@ public class GestorReservas {
         realizarCheckIn(cliente, habitacion, fechaEntrada, fechaSalida);
     }
 
-    public void calcularPrecioTotal(LocalDate fechaEntrada, LocalDate fechaSalida, Habitacion habitacion) {
-        long diasEstancia = java.time.temporal.ChronoUnit.DAYS.between(fechaEntrada, fechaSalida);
-        if (diasEstancia <= 0) {
-            throw new IllegalArgumentException("La duración de la estancia debe ser mayor a cero días.");
-        }
-        double precioPorDia = habitacion.getPrecioPorDia();
-        double total_final = precioPorDia * diasEstancia;
-    }
-
     // aux metodo para obtener una habitacion
     private Habitacion obtenerHabitacion(int numeroHabitacion) throws HabitacionNoEncontradaException {
         Habitacion habitacion = gestorHabitaciones.buscarHabitacionPorNumero(numeroHabitacion);
@@ -89,7 +80,7 @@ public class GestorReservas {
         System.out.println("Reserva realizada!");
     }
 
-    //  check-out
+    //  metodo check-out
     public void checkOut(Cliente cliente, Habitacion habitacion) throws ReservaNoEncontradaException {
         if (cliente == null || habitacion == null) {
             throw new IllegalArgumentException("El cliente o la habitación no pueden ser nulos");
@@ -105,6 +96,9 @@ public class GestorReservas {
         if (reservaActiva == null) {
             throw new ReservaNoEncontradaException("No se encontró una reserva activa para este cliente.");
         }
+        LocalDate fechaSalidaReal = LocalDate.now();
+        reservaActiva.actualizaDataSalida(fechaSalidaReal);
+        System.out.println("El precio total de la estancia es: " + reservaActiva.getPrecioTotal() + " EUR.");
         habitacion.cambiarEstado(EstadoHabitacion.DISPONIBLE);
         reservas.remove(reservaActiva);
         if (reservas.isEmpty()) {
@@ -112,6 +106,7 @@ public class GestorReservas {
         }
         System.out.println("Check-out realizado correctamente. La habitación está ahora disponible.");
     }
+
 
     // metodo para mostrar todas las reservas
     public void mostrarReservas() {
@@ -137,18 +132,17 @@ public class GestorReservas {
             System.out.println("No hay reservas registradas.");
             return;
         }
-
         boolean hayReservas = false;
         for (Map.Entry<Integer, List<Reserva>> entry : reservasPorHabitacion.entrySet()) {
             List<Reserva> reservas = entry.getValue();
             for (Reserva reserva : reservas) {
                 if (reserva.getCliente().getDNI().equals(dni)) {
                     System.out.println(reserva);
+                    System.out.println("El precio total de la estancia es: " + reserva.getPrecioTotal() + "$");
                     hayReservas = true;
                 }
             }
         }
-
         if (!hayReservas) {
             System.out.println("No hay reservas para este cliente.");
         }

@@ -62,6 +62,9 @@ public class GestorAccesos {
             if (usuario instanceof Empleado && contrasenaEnColeccion.equals(usuario.getDNI())) {
                 cambiarContrasena(usuario);
             }
+            if (usuario instanceof Cliente && contrasenaEnColeccion.equals(usuario.getDNI())) {
+                cambiarContrasena(usuario);
+            }
             return usuario;
         } else {
             System.out.println("Contraseña incorrecta.");

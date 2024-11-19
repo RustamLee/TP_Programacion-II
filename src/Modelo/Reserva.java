@@ -12,6 +12,7 @@ public class Reserva {
     private LocalDate fechaEntrada;
     private LocalDate fechaSalida;
     private Habitacion habitacion;
+    private double precioTotal;
     private boolean isActive;
 
     // constructor
@@ -34,6 +35,7 @@ public class Reserva {
         this.habitacion = habitacion;
         this.fechaEntrada = fechaEntrada;
         this.fechaSalida = fechaSalida;
+        this.precioTotal = calcularPrecioTotal();
         this.isActive = true;
 
         // Asignamos un ID único para esta reserva
@@ -53,6 +55,13 @@ public class Reserva {
         return idReserva;
     }
 
+    public void setPrecioTotal(double precioTotal) {
+        this.precioTotal = precioTotal;
+    }
+    public double getPrecioTotal() {
+        return precioTotal;
+    }
+
     public Cliente getCliente() {
         return cliente;
     }
@@ -69,14 +78,34 @@ public class Reserva {
         return habitacion;
     }
 
+    // otros métodos
+
+    private double calcularPrecioTotal() {
+        long diasEstancia = java.time.temporal.ChronoUnit.DAYS.between(fechaEntrada, fechaSalida);
+        if (diasEstancia <= 0) {
+            throw new IllegalArgumentException("La duración de la estancia debe ser mayor a cero días.");
+        }
+        return this.habitacion.getPrecioPorDia() * diasEstancia;
+    }
+
+    // Metodo para actualizar la fecha de salida de la reserva (se usa en el check-out)
+    public void actualizaDataSalida(LocalDate nuevaFechaSalida) {
+        if (nuevaFechaSalida != null && !nuevaFechaSalida.equals(this.fechaSalida)) {
+            this.fechaSalida = nuevaFechaSalida;
+            this.precioTotal = calcularPrecioTotal();
+        }
+    }
+
     @Override
     public String toString() {
         return "Reserva{" +
                 "idReserva=" + idReserva +
                 ", cliente=" + cliente.getNombre() + " " + cliente.getApellido() +
+                ", DNI=" + cliente.getDNI() +
                 ", habitacion=" + habitacion.getIdHabitacion() +
                 ", fechaEntrada=" + fechaEntrada +
                 ", fechaSalida=" + fechaSalida +
+                ", precioTotal=" + precioTotal +
                 ", isActive=" + isActive +
                 '}';
     }

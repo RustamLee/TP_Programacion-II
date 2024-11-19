@@ -1,1 +1,1 @@
-{}
+{"100":[{"idReserva":1,"cliente":{"direccion":"MDP","telefono":"43445342","nombre":"Zara","apellido":"Donna","DNI":"98765","role":"CLIENTE","email":"zara@mail.com"},"fechaEntrada":"2024-11-19","fechaSalida":"2024-11-18","habitacion":{"IdHabitacion":100,"tamano":"SINGLE","tipoHabitacion":"ECONOMICO","estado":"OCUPADO","precioPorDia":25000.0},"precioTotal":250000.0,"isActive":true}]}
