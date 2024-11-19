@@ -115,7 +115,7 @@ public class Menu {
                     gestorReservas.getGestorHabitaciones().eliminarHabitacionDeColeccion(scanner);
                     break;
                 case 9:
-                    gestorReservas.mostrarReservas();
+                    gestorReservas.mostrarReservas(scanner);
                     break;
                 default:
                     System.out.println("Opción no válida.");
@@ -127,7 +127,7 @@ public class Menu {
         while (true) {
             mostrarMenuRecepcionista();
             int option = obtenerOpcion(scanner);
-            if (option == 8) break;
+            if (option == 9) break;
             switch (option) {
                 case 1:
                     gestorAccesos.getGestorCliente().agregarUsuarioAColeccion();
@@ -165,8 +165,8 @@ public class Menu {
                         break;
                     }
                     System.out.println("Ingrese el número de habitación: ");
-                    scanner.nextLine();
                     Habitacion habitacionCheckOut = gestorReservas.getGestorHabitaciones().buscarHabitacionPorNumero(scanner.nextInt());
+                    scanner.nextLine();
                     if (habitacionCheckOut == null) {
                         System.out.println("Habitación no encontrada.");
                         break;
@@ -192,8 +192,10 @@ public class Menu {
                     cliente1.mostrarCliente();
                     break;
                 case 7:
-                    System.out.println("Mostrando todas las reservas...");
-                    gestorReservas.mostrarReservas();
+                    gestorReservas.mostrarReservas(scanner);
+                    break;
+                case 8:
+                    gestorReservas.getGestorHabitaciones().cambiarEstadoHabitacion(scanner);
                     break;
                 default:
                     System.out.println("Opción no válida.");
@@ -217,9 +219,10 @@ public class Menu {
                         gestorReservas.mostrarReservasPorCliente(cliente.getDNI());
                         break;
                     case 2:
-                        System.out.println("Ver historial de estancias.");
+                        gestorReservas.getHistoriaReservas().mostrarReservasCompletadasPorDni(cliente.getDNI());
                         break;
                     default:
+
                         System.out.println("Opción no válida.");
                 }
             } catch (NumberFormatException e) {
@@ -267,7 +270,8 @@ public class Menu {
         System.out.println("5. Listar habitaciones");
         System.out.println("6. Ver datos de un cliente");
         System.out.println("7. Mostrar todas las reservas");
-        System.out.println("8. Salir");
+        System.out.println("8. Cambiar estado de una habitación");
+        System.out.println("9. Salir");
         System.out.println("===============================");
     }
 
@@ -276,7 +280,7 @@ public class Menu {
         System.out.println("      Menu Cliente");
         System.out.println("===============================");
         System.out.println("1. Consultar mi reserva activa");
-        System.out.println("2. Ver historial de estancias");
+        System.out.println("2. Ver mi historial de estancias");
         System.out.println("3. Salir");
         System.out.println("===============================");
         System.out.print("Seleccione una opcion: ");

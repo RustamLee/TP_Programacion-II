@@ -165,12 +165,6 @@ public class GestorHabitaciones {
         }
     }
 
-    // metodo para  cambiar el estado de la habitación
-    public void actualizarEstadoHabitacion(int numeroHabitacion, EstadoHabitacion nuevoEstado) throws HabitacionNoEncontradaException {
-        Habitacion habitacion = buscarHabitacionPorNumero(numeroHabitacion);
-        habitacion.cambiarEstado(nuevoEstado);
-        System.out.println("Estado de la habitación " + numeroHabitacion + " actualizado a " + nuevoEstado);
-    }
 
     // metodo para buscar la habitación por el número
     public Habitacion buscarHabitacionPorNumero(int numeroHabitacion) throws HabitacionNoEncontradaException {
@@ -225,6 +219,23 @@ public class GestorHabitaciones {
         }
         if (!found) {
             System.out.println("No hay habitaciones disponibles.");
+        }
+    }
+
+    // metodo para cambiar estado de la habitación (para habitaciones no ocupadas)
+    public void cambiarEstadoHabitacion(Scanner scanner) {
+        int numeroHabitacion = solicitarNumeroHabitacion(scanner);
+        try {
+            Habitacion habitacion = obtenerHabitacion(numeroHabitacion);
+            if (habitacion.getEstado() == EstadoHabitacion.OCUPADO) {
+                System.out.println("Error: La habitación está ocupada y no se puede cambiar de estado.");
+                return;
+            }
+            EstadoHabitacion nuevoEstado = solicitarNuevoEstado(scanner);
+            habitacion.cambiarEstado(nuevoEstado);
+            System.out.println("Estado de la habitación " + numeroHabitacion + " actualizado a " + nuevoEstado);
+        } catch (HabitacionNoEncontradaException e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
@@ -291,5 +302,25 @@ public class GestorHabitaciones {
             break;
         }
         return numeroHabitacion;
+    }
+
+    //  aux metodo para solicitar el nuevo estado de la habitación (se usa en el metodo cambiarEstadoHabitacion)
+    private EstadoHabitacion solicitarNuevoEstado(Scanner scanner) {
+        EstadoHabitacion nuevoEstado = null;
+        while (nuevoEstado == null) {
+            System.out.println("Ingrese el nuevo estado de la habitación (DISPONIBLE, LIMPIEZA, REPARACION): ");
+            String inputEstado = scanner.nextLine().trim().toUpperCase();
+
+            try {
+                nuevoEstado = EstadoHabitacion.valueOf(inputEstado);
+                if (nuevoEstado == EstadoHabitacion.OCUPADO) {
+                    System.out.println("Error: No se puede asignar el estado 'OCUPADO' manualmente.");
+                    nuevoEstado = null;
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: Estado no válido. Debe ser DISPONIBLE, LIMPIEZA o REPARACION.");
+            }
+        }
+        return nuevoEstado;
     }
 }

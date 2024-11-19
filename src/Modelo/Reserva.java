@@ -47,8 +47,8 @@ public class Reserva {
 
     // getters y setters
 
-    public boolean isActive() {
-        return isActive;
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public int getIdReserva() {
@@ -80,10 +80,11 @@ public class Reserva {
 
     // otros métodos
 
+    // Metodo para calcular el precio total de la reserva
     private double calcularPrecioTotal() {
         long diasEstancia = java.time.temporal.ChronoUnit.DAYS.between(fechaEntrada, fechaSalida);
         if (diasEstancia <= 0) {
-            throw new IllegalArgumentException("La duración de la estancia debe ser mayor a cero días.");
+            diasEstancia = 1; // si las fexhas son iguales, se cobra al menos un día
         }
         return this.habitacion.getPrecioPorDia() * diasEstancia;
     }

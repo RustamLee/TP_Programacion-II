@@ -24,6 +24,7 @@ public class GestorArchivos {
     private String LOGIN_PATH = "loginContrasenas.json";
     private String RESERVAS_PATH = "reservas.json";
     private String HABITACIONES_PATH = "habitaciones.json";
+    private String HISTORIA_RESERVAS_PATH = "historiaReservas.json";
     private Gson gson;
 
     // Constructor
@@ -106,6 +107,14 @@ public class GestorArchivos {
         }
     }
 
+    // metodo para guardar la historia de reservas en un archivo JSON
+    public void guardarHistoriaReservas() {
+        try (FileWriter writer = new FileWriter(HISTORIA_RESERVAS_PATH)) {
+            gson.toJson(gestorReservas.getHistoriaReservas().getReservasСompletadas(), writer);
+        } catch (IOException e) {
+            System.err.println("Error guardando la historia de reservas: " + e.getMessage());
+        }
+    }
 
     // cargar empleados desde el archivo JSON al colección empleados
     public void cargarEmpleadosDesdeArchivo() throws IOException {
@@ -158,6 +167,25 @@ public class GestorArchivos {
             Map<Integer, List<Reserva>> reservasDeArchivo = gson.fromJson(reader, type);
             if (reservasDeArchivo != null) {
                 gestorReservas.getReservasPorHabitacion().putAll(reservasDeArchivo);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Archivo no encontrado: " + e.getMessage());
+        } catch (JsonSyntaxException e) {
+            System.err.println("Error de sintaxis en el archivo JSON: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error leyendo el archivo: " + e.getMessage());
+        }
+    }
+
+    // metodo para cargar la historia de reservas desde el archivo JSON a la colección reservasCompletadas
+    public void cargarHistoriaReservasDesdeArchivo() throws IOException {
+        isArchivoExiste(HISTORIA_RESERVAS_PATH, new ArrayList<Reserva>());
+        try (FileReader reader = new FileReader(HISTORIA_RESERVAS_PATH)) {
+            Type type = new TypeToken<ArrayList<Reserva>>() {
+            }.getType();
+            ArrayList<Reserva> reservasDeArchivo = gson.fromJson(reader, type);
+            if (reservasDeArchivo != null) {
+                gestorReservas.getHistoriaReservas().getReservasСompletadas().addAll(reservasDeArchivo);
             }
         } catch (FileNotFoundException e) {
             System.err.println("Archivo no encontrado: " + e.getMessage());

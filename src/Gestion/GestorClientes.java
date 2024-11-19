@@ -106,6 +106,7 @@ public class GestorClientes implements IUserCreator {
         RoleUsuario role = RoleUsuario.CLIENTE;
         Cliente cliente = new Cliente(nombre, apellido, DNI, role, email, direccion, telefono);
         addClienteToCollection(cliente);
+
     }
 
 

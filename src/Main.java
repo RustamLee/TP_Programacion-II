@@ -3,6 +3,7 @@ import Excepciones.ClienteYaExistenteException;
 import Excepciones.EmpleadoNoEncontradoException;
 import Excepciones.HabitacionNoEncontradaException;
 import Gestion.*;
+import Modelo.HistoriaReservas;
 import Modelo.Menu;
 
 
@@ -14,7 +15,8 @@ public class Main {
         GestorEmpleados gestorEmpleados = new GestorEmpleados();
         GestorClientes gestorClientes = new GestorClientes();
         GestorHabitaciones gestorHabitaciones = new GestorHabitaciones();
-        GestorReservas gestorReservas = new GestorReservas(gestorHabitaciones);
+        HistoriaReservas historiaReservas = new HistoriaReservas();
+        GestorReservas gestorReservas = new GestorReservas(gestorHabitaciones, historiaReservas);
         GestorAccesos gestorAccesos = new GestorAccesos(gestorEmpleados, gestorClientes);
         GestorArchivos gestorArchivos = new GestorArchivos(gestorAccesos, gestorReservas);
         Menu menu = new Menu(gestorAccesos, gestorReservas);
@@ -24,6 +26,7 @@ public class Main {
         gestorArchivos.cargarClientesDesdeArchivo();
         gestorArchivos.cargarLoginContrasenaDesdeArchivo();
         gestorArchivos.cargarReservasDesdeArchivo();
+        gestorArchivos.cargarHistoriaReservasDesdeArchivo();
         gestorArchivos.cargarHabitacionesDesdeArchivo();
 
         menu.start();
@@ -33,6 +36,7 @@ public class Main {
         gestorArchivos.guardarClientes();
         gestorArchivos.guardarLoginContrasena();
         gestorArchivos.guardarReservas();
+        gestorArchivos.guardarHistoriaReservas();
         gestorArchivos.guardarHabitaciones();
     }
 }

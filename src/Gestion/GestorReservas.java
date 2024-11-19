@@ -7,6 +7,7 @@ import Excepciones.HabitacionNoEncontradaException;
 import Excepciones.ReservaNoEncontradaException;
 import Modelo.Cliente;
 import Modelo.Habitacion;
+import Modelo.HistoriaReservas;
 import Modelo.Reserva;
 
 import java.time.LocalDate;
@@ -16,19 +17,26 @@ import java.util.*;
 public class GestorReservas {
     private Map<Integer, List<Reserva>> reservasPorHabitacion;
     private GestorHabitaciones gestorHabitaciones;
+    private HistoriaReservas historiaReservas;
 
     // constructor
-    public GestorReservas(GestorHabitaciones gestorHabitaciones) {
+    public GestorReservas(GestorHabitaciones gestorHabitaciones, HistoriaReservas historiaReservas) {
         this.reservasPorHabitacion = new HashMap<>();
         this.gestorHabitaciones = gestorHabitaciones;
+        this.historiaReservas = historiaReservas;
     }
 
     // getters y setters
     public Map<Integer, List<Reserva>> getReservasPorHabitacion() {
         return reservasPorHabitacion;
     }
+
     public GestorHabitaciones getGestorHabitaciones() {
         return gestorHabitaciones;
+    }
+
+    public HistoriaReservas getHistoriaReservas() {
+        return historiaReservas;
     }
 
     // metodo check-in
@@ -100,6 +108,8 @@ public class GestorReservas {
         reservaActiva.actualizaDataSalida(fechaSalidaReal);
         System.out.println("El precio total de la estancia es: " + reservaActiva.getPrecioTotal() + " EUR.");
         habitacion.cambiarEstado(EstadoHabitacion.DISPONIBLE);
+        reservaActiva.setActive(false);
+        historiaReservas.agregarReserva(reservaActiva);
         reservas.remove(reservaActiva);
         if (reservas.isEmpty()) {
             reservasPorHabitacion.remove(habitacion.getIdHabitacion());
@@ -109,19 +119,57 @@ public class GestorReservas {
 
 
     // metodo para mostrar todas las reservas
-    public void mostrarReservas() {
-        System.out.println("Lista de todas las reservas:");
-        if (reservasPorHabitacion == null || reservasPorHabitacion.isEmpty()) {
-            System.out.println("No hay reservas registradas.");
+    public void mostrarReservas(Scanner scanner) {
+        while (true) {
+            System.out.println("===============================");
+            System.out.println("Seleccione qué tipo de reservas desea ver:");
+            System.out.println("1. Reservas activas (habitaciones ocupadas)");
+            System.out.println("2. Reservas no activas (cerradas/completadas)");
+            System.out.println("===============================");
+            System.out.print("Seleccione una opción (1 о 2): ");
+            String input = scanner.nextLine().trim();
+
+            if (!input.isEmpty() && (input.equals("1") || input.equals("2"))) {
+                int option = Integer.parseInt(input);
+
+                if (option == 1) {
+                    mostrarReservasActivas();
+                    break;
+                } else if (option == 2) {
+                    mostrarReservasNoActivas();
+                    break;
+                }
+            } else {
+                System.out.println("Entrada no válida. Por favor, introduzca un número válido (1, 2 o 3).");
+            }
+        }
+    }
+
+    // metodo para mostrar las reservas activas
+    private void mostrarReservasActivas() {
+        System.out.println("Lista de reservas activas:");
+        boolean isExiste = false;
+        for (List<Reserva> reservas : reservasPorHabitacion.values()) {
+            for (Reserva reserva : reservas) {
+                System.out.println(reserva);
+                isExiste = true;
+            }
+        }
+        if (!isExiste) {
+            System.out.println("No hay reservas activas.");
+        }
+    }
+
+    // metodo para mostrar las reservas no activas
+    private void mostrarReservasNoActivas() {
+        System.out.println("Lista de reservas no activas (cerradas/completadas):");
+        List<Reserva> reservasCompletadas = historiaReservas.getReservasСompletadas();
+        if (reservasCompletadas == null || reservasCompletadas.isEmpty()) {
+            System.out.println("No hay reservas completadas.");
             return;
         }
-
-        for (Map.Entry<Integer, List<Reserva>> entry : reservasPorHabitacion.entrySet()) {
-            Integer idHabitacion = entry.getKey();
-            List<Reserva> reservas = entry.getValue();
-            System.out.println("Habitacion №: " + idHabitacion);
-            mostrarReservasParaHabitacion(reservas);
-            System.out.println();
+        for (Reserva reserva : reservasCompletadas) {
+            System.out.println(reserva);
         }
     }
 
@@ -145,17 +193,6 @@ public class GestorReservas {
         }
         if (!hayReservas) {
             System.out.println("No hay reservas para este cliente.");
-        }
-    }
-
-    // metodo para mostrar las reservas de una habitacion concreta por numero
-    private void mostrarReservasParaHabitacion(List<Reserva> reservas) {
-        if (reservas == null || reservas.isEmpty()) {
-            System.out.println("No hay reservas para esta habitación.");
-        } else {
-            for (Reserva reserva : reservas) {
-                System.out.println(reserva);
-            }
         }
     }
 
@@ -198,4 +235,5 @@ public class GestorReservas {
             throw new IllegalArgumentException("La fecha de entrada no puede ser posterior a la fecha de salida.");
         }
     }
+
 }
