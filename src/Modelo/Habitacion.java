@@ -25,21 +25,27 @@ public class Habitacion {
     public int getIdHabitacion() {
         return IdHabitacion;
     }
+
     public void setIdHabitacion(int numeroHabitacion) {
         this.IdHabitacion = numeroHabitacion;
     }
+
     public SizeHabitacion getTamano() {
         return tamano;
     }
+
     public void setTamano(SizeHabitacion tamano) {
         this.tamano = tamano;
     }
+
     public ClaseHabitacion getTipoHabitacion() {
         return tipoHabitacion;
     }
+
     public void setPrecioPorDia(double precioPorDia) {
         this.precioPorDia = precioPorDia;
     }
+
     public double getPrecioPorDia() {
         return precioPorDia;
     }

@@ -24,17 +24,22 @@ public abstract class Usuario {
     public String getDNI() {
         return DNI;
     }
+
     public String getEmail() {
         return email;
     }
+
     public RoleUsuario getRole() {
         return role;
     }
+
     public static void setGestionUsuario(GestorAccesos gestorAccesos) {
     }
+
     public void setRole(RoleUsuario nuevoRole) {
         this.role = nuevoRole;
     }
+
     public void setEmail(String nuevoEmail) {
         this.email = nuevoEmail;
     }

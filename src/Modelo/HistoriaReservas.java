@@ -30,7 +30,7 @@ public class HistoriaReservas {
     }
 
     // metodos para mostrar reservas completadas
-    public void mostrarReservasCompletadasPorDni (String dni) {
+    public void mostrarReservasCompletadasPorDni(String dni) {
         List<Reserva> reservasEncontradas = buscarReservasPorDNI(dni);
         if (reservasEncontradas.isEmpty()) {
             System.out.println("No hay reservas completadas para el cliente con DNI " + dni);

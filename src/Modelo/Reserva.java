@@ -58,6 +58,7 @@ public class Reserva {
     public void setPrecioTotal(double precioTotal) {
         this.precioTotal = precioTotal;
     }
+
     public double getPrecioTotal() {
         return precioTotal;
     }

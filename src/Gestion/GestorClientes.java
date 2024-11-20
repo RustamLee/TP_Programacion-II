@@ -183,12 +183,6 @@ public class GestorClientes implements IUserCreator {
         }
     }
 
-    // metodos para mostrar todos los clientes
-    public void mostrarClientes() {
-        for (Cliente e : clientes.values()) {
-            e.mostrarCliente();
-        }
-    }
 
     // metodo para solicitar cliente
     public Cliente solicitarCliente(Scanner scanner) {

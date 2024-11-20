@@ -25,9 +25,11 @@ public class GestorAccesos {
     public GestorEmpleados getGestorEmpleado() {
         return gestorEmpleados;
     }
+
     public GestorClientes getGestorCliente() {
         return gestorClientes;
     }
+
     public static HashMap<String, String> getLoginContrasenas() {
         return loginContrasenas;
     }
@@ -93,21 +95,4 @@ public class GestorAccesos {
         loginContrasenas.put(usuario.getEmail(), nuevaContrasena);
         System.out.println("La contraseña se cambió correctamente.");
     }
-
-    // metodo para buscar usuario por email
-    public Usuario buscarUsuarioPorEmail(String email) throws EmpleadoNoEncontradoException, ClienteNoEncontradoException {
-        Empleado empleado = gestorEmpleados.buscarEmpleadoPorEmail(email);
-        if (empleado != null) {
-            return empleado;
-        }
-        Cliente cliente = gestorClientes.buscarClientePorEmail(email);
-        if (cliente != null) {
-            return cliente;
-        }
-        return null;
-    }
-
-
-
-
 }

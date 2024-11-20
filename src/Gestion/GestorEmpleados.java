@@ -155,8 +155,7 @@ public class GestorEmpleados implements IUserCreator {
         if (rolActual == RoleUsuario.ADMINISTRADOR) {
             mensaje = "El empleado tiene el role Administrador. Desea cambiar el rol a RECEPCIONISTA?";
             nuevoRole = RoleUsuario.RECEPCIONISTA;
-        }
-        else if (rolActual == RoleUsuario.RECEPCIONISTA) {
+        } else if (rolActual == RoleUsuario.RECEPCIONISTA) {
             mensaje = "El empleado tiene el role Recepcionista. Desea cambiar el rol a ADMINISTRADOR?";
             nuevoRole = RoleUsuario.ADMINISTRADOR;
         }
@@ -210,7 +209,6 @@ public class GestorEmpleados implements IUserCreator {
             System.out.println("No se cambió el email.");
         }
     }
-
 
 
 }

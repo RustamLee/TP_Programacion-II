@@ -90,7 +90,7 @@ public class GestorArchivos {
 
     // guardamos habitaciones en un archivo JSON
     public void guardarHabitaciones() {
-        try(FileWriter writer = new FileWriter(HABITACIONES_PATH)) {
+        try (FileWriter writer = new FileWriter(HABITACIONES_PATH)) {
             gson.toJson(gestorReservas.getGestorHabitaciones().getListaHabitaciones(), writer);
         } catch (IOException e) {
             System.err.println("Error guardando habitaciones: " + e.getMessage());
@@ -118,13 +118,15 @@ public class GestorArchivos {
 
     // cargar empleados desde el archivo JSON al colección empleados
     public void cargarEmpleadosDesdeArchivo() throws IOException {
-        Type type = new TypeToken<HashMap<String, Empleado>>(){}.getType();
+        Type type = new TypeToken<HashMap<String, Empleado>>() {
+        }.getType();
         cargarDesdeArchivo(EMPLEADOS_PATH, gestorAccesos.getGestorEmpleado().getEmpleados(), type);
     }
 
     // cargar clientes desde el archivo JSON al colección clientes
     public void cargarClientesDesdeArchivo() throws IOException {
-        Type type = new TypeToken<HashMap<String, Cliente>>(){}.getType();
+        Type type = new TypeToken<HashMap<String, Cliente>>() {
+        }.getType();
         cargarDesdeArchivo(CLIENTES_PATH, gestorAccesos.getGestorCliente().getClientes(), type);
     }
 
@@ -145,7 +147,8 @@ public class GestorArchivos {
     public void cargarHabitacionesDesdeArchivo() throws IOException {
         isArchivoExiste(HABITACIONES_PATH, new ArrayList<Habitacion>());
         try (FileReader reader = new FileReader(HABITACIONES_PATH)) {
-            Type type = new TypeToken<ArrayList<Habitacion>>() {}.getType();
+            Type type = new TypeToken<ArrayList<Habitacion>>() {
+            }.getType();
             ArrayList<Habitacion> habitacionesDeArchivo = gson.fromJson(reader, type);
             if (habitacionesDeArchivo != null) {
                 gestorReservas.getGestorHabitaciones().getListaHabitaciones().addAll(habitacionesDeArchivo);
@@ -159,7 +162,7 @@ public class GestorArchivos {
 
 
     // cargar reservas desde el archivo JSON al colección reservasPorHabitacion
-    public void cargarReservasDesdeArchivo () throws IOException {
+    public void cargarReservasDesdeArchivo() throws IOException {
         isArchivoExiste(RESERVAS_PATH, new HashMap<Integer, List<Reserva>>());
         try (FileReader reader = new FileReader(RESERVAS_PATH)) {
             Type type = new TypeToken<Map<Integer, List<Reserva>>>() {
