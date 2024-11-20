@@ -20,6 +20,5 @@ public class Main {
             System.err.println("Error de datos: " + e.getMessage());
             System.exit(2);
         }
-        System.out.println("El programa se ha lanzado con éxito!");
     }
 }

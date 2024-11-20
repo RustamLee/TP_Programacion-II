@@ -1,5 +1,6 @@
 package Modelo;
 
+import Enumeraciones.RoleUsuario;
 import Excepciones.ClienteNoEncontradoException;
 import Excepciones.ClienteYaExistenteException;
 import Excepciones.EmpleadoNoEncontradoException;
@@ -40,7 +41,7 @@ public class AppStarter {
 
         // Cargar los datos
         cargarDatos();
-
+        crearAdministrador();
         // Iniciar el menú
         menu.start();
 
@@ -64,5 +65,16 @@ public class AppStarter {
         gestorArchivos.guardarReservas();
         gestorArchivos.guardarHistoriaReservas();
         gestorArchivos.guardarHabitaciones();
+    }
+
+    // inicializamos un administrador por defecto si no existe para poder acceder al sistema
+    private void crearAdministrador() {
+        String DNI_ADMIN = "12345"; // dni por defecto del administrador
+        if (!gestorEmpleados.getEmpleados().values().stream().anyMatch(e -> e.getDNI().equals(DNI_ADMIN))) {
+            Empleado admin = new Empleado("Juan", "Pérez", DNI_ADMIN, RoleUsuario.ADMINISTRADOR, "admin@mail.com", "9876543210");
+            gestorEmpleados.getEmpleados().put(admin.getDNI(), admin);
+        } else {
+            System.out.println("Administrador ya existe");
+        }
     }
 }
