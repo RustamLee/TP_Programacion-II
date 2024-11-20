@@ -40,9 +40,14 @@ public class GestorArchivos {
     private void isArchivoExiste(String path, Object defaultData) throws IOException {
         File file = new File(path);
         if (!file.exists()) {
-            file.createNewFile();
-            try (FileWriter writer = new FileWriter(file)) {
-                gson.toJson(defaultData, writer);
+            try {
+                file.createNewFile();
+                try (FileWriter writer = new FileWriter(file)) {
+                    gson.toJson(defaultData, writer);
+                }
+            } catch (IOException e) {
+                System.err.println("Error al crear o escribir en el archivo: " + e.getMessage());
+                throw e;
             }
         }
     }
@@ -56,7 +61,7 @@ public class GestorArchivos {
                 coleccion.putAll(dataDeArchivo);
             }
         } catch (IOException e) {
-            System.err.println("Error verificando o creando el archivo: " + e.getMessage());
+            System.err.println("Error guardando los datos en el archivo " + path + ": " + e.getMessage());
         }
     }
 
@@ -81,6 +86,10 @@ public class GestorArchivos {
 
     // guardamos login y contrasena en un archivo JSON
     public void guardarLoginContrasena() {
+        File file = new File(LOGIN_PATH);
+        if (!file.exists()){
+            Map<String, String> loginContrasenasInicio = new HashMap<>();
+        }
         try (FileWriter writer = new FileWriter(LOGIN_PATH)) {
             gson.toJson(gestorAccesos.getLoginContrasenas(), writer);
         } catch (IOException e) {
