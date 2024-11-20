@@ -1,1 +1,26 @@
-{"11111":{"telefono":"0439403943","nombre":"Bella","apellido":"Vella","DNI":"11111","role":"RECEPCIONISTA","email":"bella@mail.com"},"7777777":{"telefono":"42324542342","nombre":"Jonn","apellido":"Smitt","DNI":"7777777","role":"RECEPCIONISTA","email":"jonn@mail.com"},"12345":{"telefono":"123456789","nombre":"Anna","apellido":"German","DNI":"12345","role":"ADMINISTRADOR","email":"admin@mail.com"}}
+{
+  "11111": {
+    "telefono": "0439403943",
+    "nombre": "Bella",
+    "apellido": "Vella",
+    "DNI": "11111",
+    "role": "RECEPCIONISTA",
+    "email": "bella@mail.com"
+  },
+  "7777777": {
+    "telefono": "42324542342",
+    "nombre": "Jonn",
+    "apellido": "Smitt",
+    "DNI": "7777777",
+    "role": "RECEPCIONISTA",
+    "email": "jonn@mail.com"
+  },
+  "12345": {
+    "telefono": "123456789",
+    "nombre": "Anna",
+    "apellido": "German",
+    "DNI": "12345",
+    "role": "ADMINISTRADOR",
+    "email": "admin@mail.com"
+  }
+}

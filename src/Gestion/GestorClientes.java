@@ -64,6 +64,8 @@ public class GestorClientes implements IUserCreator {
             DNI = scanner.nextLine().trim();
             if (DNI.isEmpty()) {
                 System.out.println("El DNI no puede estar vacío o contener solo espacios.");
+            } else if (!DNI.matches("\\d+")) {  // Verifica que solo contenga dígitos
+                System.out.println("El DNI debe contener solo números.");
             } else {
                 break;
             }
@@ -161,6 +163,7 @@ public class GestorClientes implements IUserCreator {
     }
 
     // buscar clientes por email
+    // no manejamos la excepción porque no la necesitamos aca
     public Cliente buscarClientePorEmail(String email) throws ClienteNoEncontradoException {
         for (Cliente c : clientes.values()) {
             if (c.getEmail().equals(email)) {

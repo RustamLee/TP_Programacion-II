@@ -15,7 +15,7 @@ public class GestorAccesos {
     private GestorClientes gestorClientes;
     private static HashMap<String, String> loginContrasenas = new HashMap<>();
 
-    // Constructor
+    // constructor
     public GestorAccesos(GestorEmpleados gestorEmpleados, GestorClientes gestorClientes) {
         this.gestorEmpleados = gestorEmpleados;
         this.gestorClientes = gestorClientes;
@@ -46,19 +46,10 @@ public class GestorAccesos {
             System.out.println("Usuario no encontrado.");
             return null;
         }
-
-        Usuario usuario = null;
-        try {
-            usuario = gestorEmpleados.buscarEmpleadoPorEmail(login);
-        } catch (EmpleadoNoEncontradoException e) {
-        }
+        Usuario usuario = buscarUsuarioPorEmail(login);
         if (usuario == null) {
-            try {
-                usuario = gestorClientes.buscarClientePorEmail(login);
-            } catch (ClienteNoEncontradoException e) {
-                System.out.println("Usuario no encontrado.");
-                return null;
-            }
+            System.out.println("Usuario no encontrado.");
+            return null;
         }
         if (contrasenaEnColeccion.equals(contrasenaIngresada)) {
             if (usuario instanceof Empleado && contrasenaEnColeccion.equals(usuario.getDNI())) {
@@ -74,6 +65,21 @@ public class GestorAccesos {
         return null;
     }
 
+    // aux metodo para buscar usuario por email (se usa en verificarUsuario)
+    public Usuario buscarUsuarioPorEmail(String email) {
+        Usuario usuario = null;
+        // cogemos las excepciones, pero no hacemos nada (informaremos al usuario en el metodo verificarUsuario)
+        try {
+            usuario = gestorEmpleados.buscarEmpleadoPorEmail(email);
+        } catch (EmpleadoNoEncontradoException e) {
+            try {
+                usuario = gestorClientes.buscarClientePorEmail(email);
+            } catch (ClienteNoEncontradoException ex) {
+                return null;
+            }
+        }
+        return usuario;
+    }
 
     // el metodo para cambiarContrasena
     public void cambiarContrasena(Usuario usuario) {
