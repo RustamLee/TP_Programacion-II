@@ -1,7 +1,4 @@
-import Excepciones.ClienteNoEncontradoException;
-import Excepciones.ClienteYaExistenteException;
-import Excepciones.EmpleadoNoEncontradoException;
-import Excepciones.HabitacionNoEncontradaException;
+import Excepciones.*;
 import Modelo.AppStarter;
 
 
@@ -15,9 +12,8 @@ public class Main {
         } catch (IOException e) {
             System.err.println("Error al cargar datos: " + e.getMessage());
             System.exit(1);
-        } catch (EmpleadoNoEncontradoException | ClienteNoEncontradoException |
-                 ClienteYaExistenteException | HabitacionNoEncontradaException e) {
-            System.err.println("Error de datos: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error inesperado: " + e.getMessage());
             System.exit(2);
         }
     }

@@ -12,6 +12,7 @@ import Modelo.Reserva;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class GestorReservas {
@@ -65,7 +66,7 @@ public class GestorReservas {
 
     // metodo aux para comprobar si la habitacion esta disponible en las fechas concretas
     private boolean isHabitacionDisponible(Habitacion habitacion, LocalDate fechaEntrada, LocalDate fechaSalida) {
-        if (habitacion.getEstado() != EstadoHabitacion.DISPONIBLE) {
+        if (habitacion.getEstado() == EstadoHabitacion.REPARACION) {
             return false;
         }
         List<Reserva> reservas = reservasPorHabitacion.get(habitacion.getIdHabitacion());
@@ -80,6 +81,7 @@ public class GestorReservas {
         return true;
     }
 
+
     // metodo aux para realizar el check-in
     private void realizarCheckIn(Cliente cliente, Habitacion habitacion, LocalDate fechaEntrada, LocalDate fechaSalida) {
         habitacion.cambiarEstado(EstadoHabitacion.OCUPADO);
@@ -89,32 +91,40 @@ public class GestorReservas {
     }
 
     //  metodo check-out
-    public void checkOut(Cliente cliente, Habitacion habitacion) throws ReservaNoEncontradaException {
-        if (cliente == null || habitacion == null) {
-            throw new IllegalArgumentException("El cliente o la habitación no pueden ser nulos");
+    public void checkOut(Cliente cliente, int idReserva) throws ReservaNoEncontradaException {
+        if (cliente == null) {
+            throw new IllegalArgumentException("El cliente no puede ser nulo");
         }
-        List<Reserva> reservas = reservasPorHabitacion.getOrDefault(habitacion.getIdHabitacion(), new ArrayList<>());
-        Reserva reservaActiva = null;
-        for (Reserva reserva : reservas) {
-            if (reserva.getCliente().equals(cliente)) {
-                reservaActiva = reserva;
+        Reserva reservaSeleccionada = null;
+        for (List<Reserva> reservas : reservasPorHabitacion.values()) {
+            for (Reserva reserva : reservas) {
+                if (reserva.getCliente().equals(cliente) && reserva.getIdReserva() == idReserva) {
+                    reservaSeleccionada = reserva;
+                    break;
+                }
+            }
+            if (reservaSeleccionada != null) {
                 break;
             }
         }
-        if (reservaActiva == null) {
-            throw new ReservaNoEncontradaException("No se encontró una reserva activa para este cliente.");
+        if (reservaSeleccionada == null) {
+            throw new ReservaNoEncontradaException("No se encontró la reserva con IdReserva: " + idReserva);
         }
+        Habitacion habitacion = reservaSeleccionada.getHabitacion();
         LocalDate fechaSalidaReal = LocalDate.now();
-        reservaActiva.actualizaDataSalida(fechaSalidaReal);
-        System.out.println("El precio total de la estancia es: " + reservaActiva.getPrecioTotal() + " EUR.");
+        reservaSeleccionada.actualizaDataSalida(fechaSalidaReal);
         habitacion.cambiarEstado(EstadoHabitacion.DISPONIBLE);
-        reservaActiva.setActive(false);
-        historiaReservas.agregarReserva(reservaActiva);
-        reservas.remove(reservaActiva);
-        if (reservas.isEmpty()) {
+        reservaSeleccionada.setActive(false);
+        historiaReservas.agregarReserva(reservaSeleccionada);
+        List<Reserva> reservas = reservasPorHabitacion.get(habitacion.getIdHabitacion());
+        if (reservas != null) {
+            reservas.remove(reservaSeleccionada);
+        }
+        if (reservas == null || reservas.isEmpty()) {
             reservasPorHabitacion.remove(habitacion.getIdHabitacion());
         }
-        System.out.println("Check-out realizado correctamente. La habitación está ahora disponible.");
+
+        System.out.println("Check-out realizado correctamente. La habitación está disponible.");
     }
 
 
@@ -162,7 +172,7 @@ public class GestorReservas {
 
     // metodo para mostrar las reservas no activas
     private void mostrarReservasNoActivas() {
-        System.out.println("Lista de reservas no activas (cerradas/completadas):");
+        System.out.println("Lista de reservas no activas (completadas):");
         List<Reserva> reservasCompletadas = historiaReservas.getReservasСompletadas();
         if (reservasCompletadas == null || reservasCompletadas.isEmpty()) {
             System.out.println("No hay reservas completadas.");
@@ -207,19 +217,24 @@ public class GestorReservas {
         while (fecha == null) {
             try {
                 System.out.print(mensaje);
-                String fechaStr = scanner.nextLine();
+                String fechaStr = scanner.nextLine().trim();
+                if (fechaStr.isEmpty()) {
+                    throw new IllegalArgumentException("La fecha no puede estar vacía. Intente nuevamente.");
+                }
                 for (DateTimeFormatter formatter : formatters) {
                     try {
                         fecha = LocalDate.parse(fechaStr, formatter);
                         break;
-                    } catch (Exception ignored) {
+                    } catch (DateTimeParseException ignored) {
                     }
                 }
                 if (fecha == null) {
-                    throw new Exception("Formato de fecha incorrecto. Intente nuevamente.");
+                    throw new IllegalArgumentException("Formato de fecha incorrecto. Intente nuevamente.");
                 }
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Ocurrió un error inesperado: " + e.getMessage());
             }
         }
         return fecha;

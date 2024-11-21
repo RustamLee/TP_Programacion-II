@@ -41,7 +41,7 @@ public class GestorHabitaciones {
                 throw new IllegalArgumentException("La habitación no puede ser nula");
             }
             if (isHabitacionExiste(nuevo.getIdHabitacion())) {
-                throw new HabitacionYaExistenteException("El número de habitación ya existe");
+                throw new HabitacionYaExistenteException("El número de habitación"+ nuevo.getIdHabitacion() + " ya existe.");
             } else {
                 listaHabitaciones.add(nuevo);
                 System.out.println("Se agregó una nueva habitación: " + nuevo);
@@ -49,8 +49,6 @@ public class GestorHabitaciones {
         } catch (HabitacionYaExistenteException e) {
             System.out.println("Error: " + e.getMessage());
         } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-        } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
@@ -107,7 +105,11 @@ public class GestorHabitaciones {
             } else {
                 try {
                     precioPorDia = Double.parseDouble(inputPrecio);
-                    break;
+                    if (precioPorDia <= 0) {
+                        System.out.println("Error: El precio debe ser mayor que cero.");
+                    } else {
+                        break;
+                    }
                 } catch (NumberFormatException e) {
                     System.out.println("Error: El precio por día debe ser un número válido.");
                 }
@@ -156,12 +158,6 @@ public class GestorHabitaciones {
             }
         } catch (HabitacionNoEncontradaException e) {
             System.out.println("Error: " + e.getMessage());
-        } catch (Exception e) {
-            if (e.getMessage() == null || e.getMessage().isEmpty()) {
-                System.out.println("Se produjo un error inesperado, pero no se ha proporcionado un mensaje detallado.");
-            } else {
-                System.out.println("Se produjo un error inesperado: " + e.getMessage());
-            }
         }
     }
 
@@ -183,42 +179,51 @@ public class GestorHabitaciones {
             System.out.println("Seleccione las habitaciones que desea ver:");
             System.out.println("1. Habitaciones disponibles");
             System.out.println("2. Habitaciones ocupadas");
-            System.out.println("3. Todas las habitaciones");
+            System.out.println("3. Habitaciones en limpieza");
+            System.out.println("4. Habitaciones en reparación");
+            System.out.println("5. Todas las habitaciones");
             System.out.println("===============================");
-            System.out.print("Seleccione una opción (1, 2 o 3): ");
+            System.out.print("Seleccione una opción (1, 2, 3, 4 o 5): ");
             String input = scanner.nextLine().trim();
 
-            if (!input.isEmpty() && (input.equals("1") || input.equals("2") || input.equals("3"))) {
+            if (!input.isEmpty() && (input.equals("1") || input.equals("2") || input.equals("3") || input.equals("4") || input.equals("5"))) {
                 int option = Integer.parseInt(input);
 
                 if (option == 1) {
-                    mostrarHabitacionesDisponibles();
+                    mostrarHabitacionesPorEstado(EstadoHabitacion.DISPONIBLE);
                     break;
                 } else if (option == 2) {
-                    mostrarHabitacionesOcupadas();
+                    mostrarHabitacionesPorEstado(EstadoHabitacion.OCUPADO);
                     break;
                 } else if (option == 3) {
+                    mostrarHabitacionesPorEstado(EstadoHabitacion.LIMPIEZA);
+                    break;
+                } else if (option == 4) {
+                    mostrarHabitacionesPorEstado(EstadoHabitacion.REPARACION);
+                    break;
+                } else if (option == 5) {
                     mostrarTodasLasHabitaciones();
                     break;
                 }
             } else {
-                System.out.println("Entrada no válida. Por favor, introduzca un número válido (1, 2 o 3).");
+                System.out.println("Entrada no válida. Por favor, introduzca un número válido (1, 2, 3, 4 o 5).");
             }
         }
     }
 
-    // aux metodo para mostrar todas las habitaciones disponibles
-    public void mostrarHabitacionesDisponibles() {
-        System.out.println("Todas las habitaciones disponibles:");
+
+    // aux metodo para mostrar todas las habitaciones por estado
+    public void mostrarHabitacionesPorEstado(EstadoHabitacion estado) {
+        System.out.println("Habitaciones con estado: " + estado);
         boolean found = false;
         for (Habitacion aux : listaHabitaciones) {
-            if (aux.getEstado() == EstadoHabitacion.DISPONIBLE) {
+            if (aux.getEstado() == estado) {
                 System.out.println(aux);
                 found = true;
             }
         }
         if (!found) {
-            System.out.println("No hay habitaciones disponibles.");
+            System.out.println("No hay habitaciones con el estado " + estado + ".");
         }
     }
 
@@ -236,21 +241,6 @@ public class GestorHabitaciones {
             System.out.println("Estado de la habitación " + numeroHabitacion + " actualizado a " + nuevoEstado);
         } catch (HabitacionNoEncontradaException e) {
             System.out.println("Error: " + e.getMessage());
-        }
-    }
-
-    // aux metodo para mostrar todas las habitaciones ocupadas
-    public void mostrarHabitacionesOcupadas() {
-        System.out.println("Todas las habitaciones ocupadas:");
-        boolean found = false;
-        for (Habitacion aux : listaHabitaciones) {
-            if (aux.getEstado() == EstadoHabitacion.OCUPADO) {
-                System.out.println(aux);
-                found = true;
-            }
-        }
-        if (!found) {
-            System.out.println("No hay habitaciones ocupadas.");
         }
     }
 

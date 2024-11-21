@@ -1,10 +1,7 @@
 package Modelo;
 
 import Enumeraciones.RoleUsuario;
-import Excepciones.ClienteNoEncontradoException;
-import Excepciones.ClienteYaExistenteException;
-import Excepciones.EmpleadoNoEncontradoException;
-import Excepciones.HabitacionNoEncontradaException;
+import Excepciones.*;
 import Gestion.GestorAccesos;
 import Gestion.GestorArchivos;
 import Gestion.GestorClientes;
@@ -25,9 +22,7 @@ public class AppStarter {
     private GestorArchivos gestorArchivos;
     private Menu menu;
 
-    public void inicializar() throws IOException,
-            EmpleadoNoEncontradoException, ClienteNoEncontradoException,
-            ClienteYaExistenteException, HabitacionNoEncontradaException {
+    public void inicializar() throws IOException{
 
         // Inicialización de objetos
         gestorEmpleados = new GestorEmpleados();
@@ -73,8 +68,6 @@ public class AppStarter {
         if (!gestorEmpleados.getEmpleados().values().stream().anyMatch(e -> e.getDNI().equals(DNI_ADMIN))) {
             Empleado admin = new Empleado("Juan", "Pérez", DNI_ADMIN, RoleUsuario.ADMINISTRADOR, "admin@mail.com", "9876543210");
             gestorEmpleados.getEmpleados().put(admin.getDNI(), admin);
-        } else {
-            System.out.println("Administrador ya existe");
         }
     }
 }

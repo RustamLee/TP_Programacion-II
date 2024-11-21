@@ -23,94 +23,53 @@ public class GestorClientes implements IUserCreator {
     }
 
     // aux metodo para agregar un cliente a la coleccion (se usa en el metodo agregarUsuarioAColeccion)
-    public void addClienteToCollection(Cliente c) {
+    public void addClienteToCollection(Cliente c) throws ClienteYaExistenteException {
+        if (clientes.containsKey(c.getDNI())) {
+            throw new ClienteYaExistenteException("Cliente ya existe");
+        }
+        clientes.put(c.getDNI(), c);
+        System.out.println("Cliente agregado con éxito.");
+    }
+
+
+    // el metodo para crear nuevoCliente
+    public void agregarUsuarioAColeccion() {
+        Scanner scanner = new Scanner(System.in);
+        String nombre = obtenerDatoValido(scanner, "Ingrese el nombre del cliente: ", "El nombre no puede contener números/caracteres especiales/solo espacios.", "[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+");
+        String apellido = obtenerDatoValido(scanner, "Ingrese el apellido del cliente: ", "El apellido no puede contener números/caracteres especiales/solo espacios.", "[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+");
+        String DNI = obtenerDatoValido(scanner, "Ingrese el DNI del cliente: ", "El DNI no puede estar vacío o contener solo espacios.", "\\d+");
+        if (clientes.containsKey(DNI)) {
+            System.out.println("Ya existe un cliente con ese DNI. No se puede agregar.");
+            return;
+        }
+        String email = obtenerDatoValido(scanner, "Ingrese el email del cliente: ", "El email no puede estar vacío o contener solo espacios.", "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+        String direccion = obtenerDatoValido(scanner, "Ingrese la direccion del cliente: ", "La dirección no puede estar vacía o contener solo espacios.", ".*");
+        String telefono = obtenerDatoValido(scanner, "Ingrese el teléfono del cliente: ", "El teléfono no puede estar vacío o contener solo espacios.", "\\+?[0-9]+");
+        RoleUsuario role = RoleUsuario.CLIENTE;
+        Cliente cliente = new Cliente(nombre, apellido, DNI, role, email, direccion, telefono);
         try {
-            if (clientes.containsKey(c.getDNI())) {
-                throw new ClienteYaExistenteException("Cliente ya existe");
-            }
-            clientes.put(c.getDNI(), c);
-            System.out.println("Cliente agregado con éxito.");
+            addClienteToCollection(cliente);
         } catch (ClienteYaExistenteException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    // el metodo para crear nuevoCliente
-    public void agregarUsuarioAColeccion() throws ClienteYaExistenteException {
-        Scanner scanner = new Scanner(System.in);
-        String nombre;
+    // metodo para verificar datos ingresados
+    private String obtenerDatoValido(Scanner scanner, String mensaje, String mensajeError, String patron) {
+        String dato;
         while (true) {
-            System.out.println("Ingrese el nombre del cliente: ");
-            nombre = scanner.nextLine().trim();
-            if (nombre.isEmpty() || !nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
-                System.out.println("El nombre no puede contener números/caracteres especiales/ solo espacios.");
+            System.out.println(mensaje);
+            dato = scanner.nextLine().trim();
+            if (dato.isEmpty()) {
+                System.out.println(mensajeError);
+            } else if (!dato.matches(patron)) {
+                System.out.println("El dato ingresado no es válido. Intente nuevamente.");
             } else {
                 break;
             }
         }
-        String apellido;
-        while (true) {
-            System.out.println("Ingrese el apellido del cliente: ");
-            apellido = scanner.nextLine().trim();
-            if (apellido.isEmpty() || !apellido.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
-                System.out.println("El apellido no puede contener números/caracteres especiales/ solo espacios.");
-            } else {
-                break;
-            }
-        }
-        String DNI;
-        while (true) {
-            System.out.println("Ingrese el DNI del cliente: ");
-            DNI = scanner.nextLine().trim();
-            if (DNI.isEmpty()) {
-                System.out.println("El DNI no puede estar vacío o contener solo espacios.");
-            } else if (!DNI.matches("\\d+")) {  // Verifica que solo contenga dígitos
-                System.out.println("El DNI debe contener solo números.");
-            } else {
-                break;
-            }
-        }
-        String email;
-        while (true) {
-            System.out.println("Ingrese el email del cliente: ");
-            email = scanner.nextLine().trim();
-            if (email.isEmpty()) {
-                System.out.println("El email no puede estar vacío o contener solo espacios.");
-            } else if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-                System.out.println("El email no es válido. Por favor, ingrese un email válido (sin espacios).");
-            } else {
-                break;
-            }
-        }
-        String direccion;
-        while (true) {
-            System.out.println("Ingrese la direccion del cliente: ");
-            direccion = scanner.nextLine().trim();
-            if (direccion.isEmpty()) {
-                System.out.println("La dirección no puede estar vacía o contener solo espacios.");
-            } else {
-                break;
-            }
-        }
-        String telefono;
-        while (true) {
-            System.out.println("Ingrese el teléfono del cliente: ");
-            telefono = scanner.nextLine().trim();
-            if (telefono.isEmpty()) {
-                System.out.println("El teléfono no puede estar vacío o contener solo espacios.");
-            } else if (!telefono.matches("\\+?[0-9]+")) {
-                System.out.println("El teléfono no es válido. Debe contener solo números.");
-            } else {
-                break;
-            }
-        }
-
-        RoleUsuario role = RoleUsuario.CLIENTE;
-        Cliente cliente = new Cliente(nombre, apellido, DNI, role, email, direccion, telefono);
-        addClienteToCollection(cliente);
-
+        return dato;
     }
-
 
     // alternativa al metodo anterior
 //    public void agregarUsuarioAColeccion() throws ClienteYaExistenteException {
@@ -174,24 +133,18 @@ public class GestorClientes implements IUserCreator {
     }
 
     // buscar clientes por DNI
-    public Cliente buscarClientePorDNI(String DNI) {
-        try {
-            if (!clientes.containsKey(DNI)) {
-                throw new ClienteNoEncontradoException("Cliente no encontrado");
-            }
-            return clientes.get(DNI);
-        } catch (ClienteNoEncontradoException e) {
-            System.out.println("Error: " + e.getMessage());
-            return null;
+    public Cliente buscarClientePorDNI(String DNI) throws ClienteNoEncontradoException {
+        if (!clientes.containsKey(DNI)) {
+            throw new ClienteNoEncontradoException("Cliente no encontrado");
         }
+        return clientes.get(DNI);
     }
 
-
     // metodo para solicitar cliente
-    public Cliente solicitarCliente(Scanner scanner) {
+    public Cliente solicitarCliente(Scanner scanner) throws ClienteNoEncontradoException {
         String dni = null;
         while (true) {
-            System.out.println("Ingrese el DNI del cliente (solo nгmeros, sin espacios): ");
+            System.out.println("Ingrese el DNI del cliente (solo números, sin espacios): ");
             dni = scanner.nextLine().trim();
             if (dni.isEmpty()) {
                 System.out.println("El DNI no puede estar vacío.");
@@ -201,12 +154,12 @@ public class GestorClientes implements IUserCreator {
                 System.out.println("El DNI debe contener solo números.");
                 continue;
             }
-            Cliente cliente = buscarClientePorDNI(dni);
+            Cliente cliente = buscarClientePorDNI(dni); // Это может выбросить исключение
             if (cliente == null) {
-                System.out.println("No se encontró un cliente con ese DNI.");
-                return null;
+                throw new ClienteNoEncontradoException("No se encontró un cliente con ese DNI."); // Прокидываем исключение
             }
             return cliente;
         }
     }
 }
+

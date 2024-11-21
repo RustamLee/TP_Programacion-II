@@ -1,5 +1,6 @@
 package Modelo;
 
+import Enumeraciones.EstadoHabitacion;
 import Enumeraciones.RoleUsuario;
 import Excepciones.*;
 import Gestion.GestorAccesos;
@@ -18,7 +19,7 @@ public class Menu {
         this.gestorReservas = gestorReservas;
     }
 
-    public void start() throws EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException, HabitacionNoEncontradaException {
+    public void start() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("===============================");
@@ -40,7 +41,7 @@ public class Menu {
     }
 
 
-    private void login(Scanner scanner) throws EmpleadoNoEncontradoException, ClienteNoEncontradoException, ClienteYaExistenteException, HabitacionNoEncontradaException {
+    private void login(Scanner scanner) {
         System.out.println("===============================");
         System.out.println("       Iniciar sesión");
         System.out.println("===============================");
@@ -80,7 +81,7 @@ public class Menu {
         }
     }
 
-    private void adminMenu(Scanner scanner) throws EmpleadoNoEncontradoException {
+    private void adminMenu(Scanner scanner) {
         while (true) {
             mostrarMenuAdmin();
             int option = obtenerOpcion(scanner);
@@ -93,11 +94,19 @@ public class Menu {
                     try {
                         gestorAccesos.getGestorEmpleado().eliminarEmpleadoDeColeccion(scanner);
                     } catch (EmpleadoNoEncontradoException e) {
-                        System.out.println("Error: " + e.getMessage());
+                        System.out.println("Error: El empleado no fue encontrado. " + e.getMessage());
+                    } catch (Exception e) {
+                        System.out.println("Ha ocurrido un error inesperado al eliminar el empleado: " + e.getMessage());
                     }
                     break;
                 case 3:
-                    gestorAccesos.getGestorEmpleado().editarDatosEmpleado(scanner);
+                    try {
+                        gestorAccesos.getGestorEmpleado().editarDatosEmpleado(scanner);
+                    } catch (EmpleadoNoEncontradoException e) {
+                        System.out.println("Error: El empleado no fue encontrado. " + e.getMessage());
+                    } catch (Exception e) {
+                        System.out.println("Ha ocurrido un error inesperado al editar los datos del empleado: " + e.getMessage());
+                    }
                     break;
                 case 4:
                     gestorAccesos.getGestorEmpleado().mostrarEmpleadoPorDNI(scanner);
@@ -123,7 +132,7 @@ public class Menu {
         }
     }
 
-    private void receptionistMenu(Scanner scanner) throws ClienteYaExistenteException, HabitacionNoEncontradaException {
+    private void receptionistMenu(Scanner scanner) {
         while (true) {
             mostrarMenuRecepcionista();
             int option = obtenerOpcion(scanner);
@@ -133,10 +142,15 @@ public class Menu {
                     gestorAccesos.getGestorCliente().agregarUsuarioAColeccion();
                     break;
                 case 2:
-                    Cliente clienteCheckIn = gestorAccesos.getGestorCliente().solicitarCliente(scanner);
-                    if (clienteCheckIn == null) {
-                        System.out.println("Cliente no encontrado. Intente nuevamente.");
-                        break;
+                    Cliente clienteCheckIn = null;
+                    try {
+                        clienteCheckIn = gestorAccesos.getGestorCliente().solicitarCliente(scanner);
+                        if (clienteCheckIn == null) {
+                            System.out.println("Cliente no encontrado. Intente nuevamente.");
+                            break;
+                        }
+                    } catch (ClienteNoEncontradoException e) {
+                        System.out.println("Error al buscar el cliente: " + e.getMessage());
                     }
                     int numeroHabitacion = -1;
                     while (numeroHabitacion <= 0) {
@@ -145,51 +159,78 @@ public class Menu {
                             System.out.println("Número de habitación inválido. Intente nuevamente.");
                         }
                     }
+
+                    if (numeroHabitacion <= 0) {
+                        break;  // Прерывание цикла, если была ошибка с номером комнаты
+                    }
+
                     LocalDate fechaEntrada = gestorReservas.obtenerFecha(scanner, "Ingrese la fecha de entrada (yyyy-MM-dd o dd-MM-yyyy o MM/dd/yyyy): ");
                     LocalDate fechaSalida = gestorReservas.obtenerFecha(scanner, "Ingrese la fecha de salida (yyyy-MM-dd o dd-MM-yyyy o MM/dd/yyyy): ");
                     try {
                         gestorReservas.checkIn(clienteCheckIn, numeroHabitacion, fechaEntrada, fechaSalida);
                         System.out.println("Check-in realizado con éxito.");
-                    } catch (HabitacionNoDisponibleException | HabitacionNoEncontradaException e) {
-                        System.out.println("Error durante el check-in: " + e.getMessage());
+                    } catch (HabitacionNoDisponibleException e) {
+                        System.out.println("Error: La habitación no está disponible. " + e.getMessage());
                     } catch (Exception e) {
-                        System.out.println("Ha ocurrido un error inesperado: " + e.getMessage());
+                        System.out.println("Ha ocurrido un error inesperado durante el check-in: " + e.getMessage());
                     }
                     break;
-
                 case 3:
                     System.out.println("Ingrese el DNI del cliente: ");
-                    Cliente clienteCheckOut = gestorAccesos.getGestorCliente().buscarClientePorDNI(scanner.nextLine());
-                    if (clienteCheckOut == null) {
-                        System.out.println("Cliente no encontrado.");
-                        break;
-                    }
-                    System.out.println("Ingrese el número de habitación: ");
-                    Habitacion habitacionCheckOut = gestorReservas.getGestorHabitaciones().buscarHabitacionPorNumero(scanner.nextInt());
-                    scanner.nextLine();
-                    if (habitacionCheckOut == null) {
-                        System.out.println("Habitación no encontrada.");
-                        break;
-                    }
+                    Cliente clienteCheckOut = null;
                     try {
-                        gestorReservas.checkOut(clienteCheckOut, habitacionCheckOut);
+                        clienteCheckOut = gestorAccesos.getGestorCliente().buscarClientePorDNI(scanner.nextLine());
+                        if (clienteCheckOut == null) {
+                            System.out.println("Cliente no encontrado.");
+                            break;
+                        }
+                    } catch (ClienteNoEncontradoException e) {
+                        System.out.println("Error al buscar el cliente: " + e.getMessage());
+                        break;
+                    }
+
+                    // Mostrar todas las reservas activas del cliente
+                    gestorReservas.mostrarReservasPorCliente(clienteCheckOut.getDNI());
+
+                    // El cliente selecciona cuál reserva desea cancelar
+                    System.out.println("Seleccione el número de la reserva que desea cancelar: ");
+                    int numeroReserva;
+                    try {
+                        numeroReserva = Integer.parseInt(scanner.nextLine().trim());
+                    } catch (NumberFormatException e) {
+                        System.out.println("Número de reserva inválido.");
+                        break;
+                    }
+
+                    // Llamar al metodo de check-out para la reserva seleccionada
+                    try {
+                        gestorReservas.checkOut(clienteCheckOut, numeroReserva);  // Metodo modificado para aceptar número de reserva
                     } catch (ReservaNoEncontradaException e) {
                         System.out.println("Error durante el check-out: " + e.getMessage());
                     } catch (Exception e) {
-                        System.out.println("Ha ocurrido un error inesperado: " + e.getMessage());
+                        System.out.println("Ha ocurrido un error inesperado durante el check-out: " + e.getMessage());
                     }
                     break;
 
                 case 4:
-                    gestorReservas.getGestorHabitaciones().mostrarHabitacionesDisponibles();
+                    gestorReservas.getGestorHabitaciones().mostrarHabitacionesPorEstado(EstadoHabitacion.DISPONIBLE);
                     break;
                 case 5:
                     gestorReservas.getGestorHabitaciones().listarHabitaciones(scanner);
                     break;
                 case 6:
                     System.out.println("Ingrese el DNI del cliente: ");
-                    Cliente cliente1 = gestorAccesos.getGestorCliente().buscarClientePorDNI(scanner.nextLine());
-                    cliente1.mostrarCliente();
+                    Cliente cliente1 = null;
+                    try {
+                        cliente1 = gestorAccesos.getGestorCliente().buscarClientePorDNI(scanner.nextLine());
+                        if (cliente1 != null) {
+                            cliente1.mostrarCliente();
+                        } else {
+                            System.out.println("Cliente no encontrado.");
+                        }
+                    } catch (ClienteNoEncontradoException e) {
+                        System.out.println("Error al buscar el cliente: " + e.getMessage());
+                    }
                     break;
                 case 7:
                     gestorReservas.mostrarReservas(scanner);
