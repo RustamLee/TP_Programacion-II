@@ -1,49 +1,40 @@
-# gestion_hotelera
-Trabajo práctico en grupo.  Universidad Tecnológica Nacional, Mar del Plata
+# Hotel Management System
+
+UTN (Universidad Tecnológica Nacional), Mar del Plata
+
 UML diagram: https://drive.google.com/file/d/1h1cFOmklX779Gvo-TJU82N4HqMNciffV/view?usp=sharing
 
+This project is a comprehensive hotel management system designed to manage various aspects of hotel operations, including employee and client management, room reservations, and access control. The system is built using Java and utilizes object-oriented programming (OOP) principles to ensure modularity and maintainability.
 
-Scenarios: 
-ADMIN
-1) Autorización en el sistema. Cuando inicia sesión por primera vez, login: admin y la contraseña: 12345. Después del primer inicio de sesión, debe cambiar la contraseña.
-2) Agregar y Eliminar un empleado. El administrador puede agregar un nuevo empleado y asignarle el rol apropiado (administrador o recepcionista). El administrador también puede eliminar a un empleado.
-3) 
+## Key Features
 
-RECEPCIONISTA 
-1) Autorización en el sistema. Cuando inicia sesión por primera vez, login: email y la contraseña: numero de dni.El administrador primero debe agregar al empleado al sistema.Después del primer inicio de sesión, debe cambiar la contraseña.
-2) Crear una reserva para un cliente. Eliminando reservas. 
+- **Employee and Client Management:** Allows for the creation, modification, and deletion of employee and client records. Employees are categorized into roles such as administrators and receptionists, while clients are managed separately.
+- **Room Reservations:** Clients can reserve rooms based on availability. Rooms are categorized by size and type, and their status can be dynamically updated.
+- **Access Control:** A login system ensures that only authorized personnel can access specific features based on their roles.
+- **Data Persistence:** Data is stored in files, ensuring persistence across application sessions.
 
-CLIENTE
-1) Autorización en el sistema. Cuando inicia sesión por primera vez, login: email y la contraseña: numero de dni. La recepcionista primero debe agregar al empleado al sistema.Después del primer inicio de sesión, debe cambiar la contraseña.
-2) Una vez iniciado sesión, el cliente podrá ver información sobre su reserva activa. Si el cliente no tiene una reserva activa no puede iniciar sesión.
+## Technical Details
 
-Bloques de proyecto:
+- **Programming Language:** Java
+- **Libraries Used:** Gson for JSON serialization and deserialization
+- **Design Patterns:** OOP principles are extensively used, with the potential for future integration of design patterns like Singleton or Factory.
+- **Version Control:** GitHub for collaborative development and version control.
 
-1)
-- Gestión de usuarios: 
-Administrar el acceso al sistema para empleados y clientes, métodos de login y logout, métodos para actualizar la contraseña (por defecto la contraseña es DNI, pero después del primer inicio de sesión debe cambiarla y login es email). Después de agregar un nuevo empleado al sistema o crear reservas para un cliente, se crea una contraseña por defecto (número de DNI). La nueva contraseña no puede ser el número del DNI. Después de eliminar un empleado del sistema, el acceso al sistema se bloquea. El cliente puede iniciar sesión en el sistema solo si tiene una reserva activa. Las contraseñas se almacenan en el archivo en forma cifrada.
-- Gestion de Hotel:
-Agregar un nuevo empleado, eliminar un empleado del sistema, cambiarlo. Agregar/eliminar/editar datos de habitaciones. Costo de reservas. Sólo el Administrador puede manejar los datos de Hotel.
-- Gestion de archivos:
-  El sistema de almacenamiento de datos está estructurado de la siguiente manera: cuando se inicia el programa, los datos de los archivos se cargan en colecciones. Mientras el programa se está ejecutando, toda la interacción con los datos ocurre en colecciones (agregar/eliminar/editar/controlar duplicados). Una vez que se cierra el programa, todos los datos se envían desde las colecciones a los archivos. Los datos starán disponibles la próxima vez que los inicies.
-    
-2)
-- Gestión de reservas: 
-Implementación de lógica de gestión de habitaciones y reservas.
-Métodos de check-in, check-out y consulta de disponibilidad de habitaciones. Manejo de excepciones. 
-Gestión del almacenamiento de información similar al almacenamiento de datos de los empleados (se utiliza GestiónArchivos).
+## Project Structure
 
-3)
-- Interfaz de usuario:
-Desarrollo de una interfaz para la interacción con los usuarios:
-Interfaz de consola o interfaz gráfica de usuario (GUI).
-Creación de métodos de login, registro y reserva de salas.
-Integración de la interfaz de usuario con la lógica de negocio.
-Procesar solicitudes de usuarios y mostrar información.
-Hay que hacer 3 varios de menu: para admin, recepcionista, cliente. Al usuario se le mostrará el menú que corresponde a su rol de usuario (ADMINISTRADOR, CLIENTE, RECEPCIONISTA). 
+- **Data Models:** Core entities like `Cliente`, `Empleado`, `Habitacion`, `Reserva`, and `HistoriaReservas`.
+- **Managers:** Classes like `GestorEmpleados`, `GestorClientes`, `GestorHabitaciones`, `GestorReservas`, and `GestorAccesos` handle data management and operations.
+- **Access System:** Managed by the `GestorAccesos` class for login and access control functionality.
+- **Menu and Interface:** The `Menu` class implements the user interface for console interaction.
 
-Integración general
-Al finalizar cada parte:
-Reuniones periódicas para discutir el progreso y la integración de componentes.
-Un repositorio de código común pero cada uno tiene su propia rama.
-Prepare documentación que explique cómo interactúa cada componente con los demás.
+## Challenges and Solutions
+
+One of the main challenges was managing data persistence without overloading the system with serialization and deserialization. The solution was to load all data into memory at startup, update it during runtime, and save it back to JSON files at the end of the program. This approach mitigates the frequency of serialization but introduces risks such as data loss in case of system failure. For a small educational project, this solution is acceptable, but in real-world scenarios, periodic autosaving, backup creation, or database integration could address these issues.
+
+## Successful Implementations
+
+The role-based access control system is a key feature. Upon user login, the system determines the user’s role and displays a menu corresponding to their role, ensuring that users only have access to features relevant to them. This improves both security and usability.
+
+## Team Effort
+
+This project was developed by a team of three students. The tasks were divided, and code was reviewed and integrated through GitHub.
